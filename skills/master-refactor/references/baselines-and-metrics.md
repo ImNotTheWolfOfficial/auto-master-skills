@@ -10,7 +10,7 @@ Capture the "before" evidence prior to any implementation, so "leaner, more opti
 
 ## Visual Snapshot (UI projects)
 
-For frontend-visible refactor targets, screenshot the current state of the affected screens/flows before changes and store them under `~/.codex/artifacts/<project-slug>/refactor/baselines/<date>/`. These are the reference images for visual regression comparison during QA.
+For frontend-visible refactor targets, screenshot the current state of the affected screens/flows before changes and store them under `~/.auto-master/artifacts/<project-slug>/refactor/baselines/<date>/`. These are the reference images for visual regression comparison during QA.
 
 ## Metric Baselines
 

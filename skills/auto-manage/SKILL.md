@@ -1,79 +1,88 @@
 ---
 name: auto-manage
-description: Use when the user wants the agent to manage a large, multi-phase build end to end — research, planning, development, review, security review, and QA — coordinating worker and reviewer sub-agents and acting on the user's behalf until the scope is complete.
+description: Manage large, multi-phase builds end to end through research, planning, implementation, review, security review, and QA. Use when the user asks for /manage, auto-manage, autonomous project management, roadmap execution, or a complete build that needs bounded slices and risk-tiered verification. Work inline by default and use workers or independent reviewers only when their separation materially improves speed or confidence.
 ---
 
 # Auto Manage
 
-For scopes too large for `$thething`. The main agent becomes the manager: it stands in for the user through the full pipeline — **Research -> Plan -> Develop -> QA** — delegating bounded slices to sub-agents, reviewing their output, and continuing until the feature is built, security-reviewed, tested end to end, and ready to present. Do not hand back partial work unless genuinely blocked.
+Own the full **Research -> Plan -> Develop -> QA** pipeline and continue until the approved scope is complete or genuinely blocked. Keep the Auto/Master system as the backbone; apply the selective verification kernel without creating process for its own sake.
+
+When invoking sibling skills, use the active runtime's explicit command form: Codex prefixes the skill name with a dollar sign, while Claude Code prefixes it with a slash. If direct invocation is unavailable, apply the sibling contract inline.
 
 ## Pipeline
 
-1. **Research** — discuss the idea until it is researchable, then use `$auto-research`: write the research-scope artifact, iterate until sufficient (the manager may approve the scope on the user's behalf when the user has delegated the build), then execute the research and record findings.
-2. **Plan** — turn findings into a development plan with `$auto-plan`, or a leaner inline plan when the scope is small enough that full skill overhead is waste. Security is a required plan section.
-3. **Develop** — break the plan into bounded slices and delegate each as a `$thething`-style task: plan the slice briefly, implement with `$auto-pilot` discipline, validate with `$auto-qa`. The manager owns sequencing, integration judgment, and merge quality.
-4. **QA / Review** — risk-matched `$auto-qa` per slice plus a final end-to-end pass including the Frontend Gate; an independent reviewer at risky or shared-behavior milestones; a security review before calling the scope done.
+1. **Research** - use `auto-research` for unknowns that can change the design; use a concise inline investigation when the answer is local and cheap.
+2. **Plan** - use `auto-plan` for multi-slice or risky work. Define mechanically checkable acceptance criteria, security boundaries, rollback, and the verification tier for every slice.
+3. **Develop** - execute the smallest useful slice with `auto-pilot` discipline, inline by default. Delegate only bounded, independent work whose parallelism or context isolation is worth its cost.
+4. **QA / Review** - use `auto-qa` per slice and for the final integrated pass. Run the Frontend Gate for every changed user-facing surface. Trigger independent review only at the risk boundaries below.
+5. **Close** - reconcile the roadmap, produce the final build report, and list only unresolved items from the assigned plan. If none remain, say the plan is complete.
 
-Stop only for real blockers: credentials, external access, hardware, spending, destructive operations, legal/product decisions, unsafe ambiguity, or production authority. Everything else is the manager's call.
+Stop only for credentials, unavailable external access or hardware, spending, destructive or production actions outside granted authority, legal/product decisions, unsafe ambiguity, or a circuit-breaker failure that cannot be isolated safely.
 
-## Token Economy
+## Selective Verification Kernel
 
-- Reuse sub-agents: keep one worker and one reviewer per repo/objective and feed them deltas, not re-onboarded context.
-- Right-size the tool: invoking a full skill has overhead. For small slices, write a direct worker prompt carrying the same discipline (scope, boundaries, QA, stop gates) instead of chaining skills.
-- Batch instructions: one complete prompt to a worker beats several small ones.
-- Note the rough cost of each slice (turns, context size) in the learning log; when a skill chain repeatedly costs more than it returns for a slice type, switch that type to inline prompts and record the switch.
-- Keep delegated context sanitized and minimal: artifact paths and short summaries, never pasted file dumps or secrets.
+Classify each slice before implementation. Escalate when uncertain.
+
+| Tier | Typical scope | Required proof | Independent review |
+|---|---|---|---|
+| **Micro** | Docs, comments, tests-only, or literal non-behavioral config | Focused deterministic check and changed-file audit | None |
+| **Small** | Localized logic, one component/module, or bounded UI behavior | RED -> GREEN for behavior changes, focused gates, one adjacent regression path, receipts | Only for a shared or elevated-risk boundary |
+| **Full** | Cross-cutting architecture, auth/security/privacy, data/migrations, execution/sandboxing, shared contracts, release/deploy, or broad refactor | RED -> GREEN where feasible, broad relevant gates, rollback proof, regression delta, receipts | One fresh-context review; add a second specialist only for a distinct critical question |
+
+For behavior-changing code, capture a failing test or reproducible check before the change (**RED**) and the same check passing after it (**GREEN**). Do not manufacture a failing test for docs, copy, formatting, or other non-behavioral work; use a deterministic before/after check. When automation is genuinely impossible, record the runnable baseline evidence and why manual judgment is required.
+
+Automated acceptance gates may contain only mechanically decidable criteria. Route visual quality, taste, or other subjective criteria to explicit human/model judgment; never fail mechanical verification merely because a subjective criterion needs judgment.
+
+## Evidence Contract
+
+Before each slice, record a compact `BASELINE_BLOCK`: branch/commit, relevant dirty state, existing failing checks or user-visible symptom, expected behavior, and affected surface. Afterward, record a `REGRESSION_DELTA`: baseline failures versus current failures, changed metrics where relevant, and any new or resolved issue.
+
+Every claimed gate needs an `EXECUTION_RECEIPT` containing:
+
+- exact command or manual flow;
+- start/end time or timestamp;
+- exit code or explicit pass/fail/blocked result;
+- concise relevant output or evidence path;
+- environment/profile when it affects reproducibility.
+
+Do not paste secrets or giant logs. A summary without an exit/result and evidence is not a receipt.
+
+## Loop Circuit Breaker
+
+- Allow at most five implementation/fix attempts for one slice.
+- When the same or equivalent failure occurs twice, stop blind retries. Diagnose the cause, inspect actual state, and change the hypothesis or shrink the slice before another attempt.
+- If no new evidence supports another approach, preserve the checkpoint and report the blocker instead of consuming more attempts.
+- Send confirmed mistakes, disproven claims, or repeated-failure events through `auto-reflect`; do not reflect on expected RED tests, speculation, or unrelated environment failures.
+
+## Review Economy
+
+- Work inline unless delegation clearly saves elapsed time or supplies needed context separation. Never spawn a worker merely to satisfy this workflow.
+- Reuse a warm worker/reviewer only for the same repo and objective. Give deltas rather than repeating full context.
+- Require one fresh-context review for Full-tier security/auth/privacy, data migration, execution/sandbox, shared-contract, release, or broad-refactor milestones. Give the reviewer only the contract, bounded diff, evidence, and specific questions.
+- For Micro work, skip independent review. For Small work, review only when blast radius or uncertainty justifies it.
+- Never accept reviewer output blindly; verify every must-fix against source and evidence.
 
 ## Worker Prompt Shape
 
-One objective; exact owned files/areas; explicit do-not-touch list; required QA and evidence; stop gates; how to report (changed files, verification, blockers, residual risk); which skill to use, if any. Never delegate product, legal, or security decisions.
+Give one objective, owned files/areas, a do-not-touch list, verification tier, mechanical acceptance criteria, required receipts, stop gates, and report fields. Never delegate secrets, spending, credentials, production authority, or product/legal decisions.
 
-## Review Discipline
+## Checkpoint Hygiene
 
-- Never accept worker output blindly: spot-check the diff and confirm QA evidence exists before accepting.
-- Reviewers return accept/reject, a 1-10 score, must-fix items, later items,
-  and whether the slice needs code/tests or can remain docs-only; the manager
-  decides what to fix, defer, or reject.
-- Send grounded must-fixes back to the same worker; patch directly only when that is cheaper and safe.
+Define the expected file allowlist before editing. Inspect dirty, staged, and untracked state before and after each slice. Compare the resulting diff to the allowlist; stop on unexplained changes. Never auto-delete, discard, reset, or rewrite unrelated work. Commit only coherent, verified checkpoints and push only when the branch workflow authorizes it.
 
-## Artifacts
+## Artifacts And Learning
 
-Store management artifacts outside repos: `~/.codex/artifacts/<project>/manager-run-<date>/` containing `sprint-queue.md`, per-slice review/approval notes, `learning-log.md`, and `final-build-report.md`. Implementation evidence follows repo conventions (`docs/qa/` and similar). Each accepted slice records objective, prompt summary, changed files, QA result, review disposition, blockers, and a cost note. Never name artifacts or content after AI models or providers.
+Store management artifacts outside repos under `~/.auto-master/artifacts/<project>/manager-run-<date>/`: `sprint-queue.md`, per-slice baseline/receipt/review notes, `learning-log.md`, and `final-build-report.md`. Implementation evidence may follow repo conventions such as `docs/qa/`. Never name artifacts after models or providers.
 
-## Self-Learning (keep it lean)
-
-During the run, log in `learning-log.md`: prompts that produced strong output, prompts that caused confusion, scope creep, or weak QA, recurring blockers, better slice sizing, and cost observations. When the scope ends, promote only lessons that are general, reusable, and safe into Learned Rules below — merge or replace bullets instead of appending, keep the section at ten bullets or fewer, and never add project specifics, secrets, or run history. Report any skill edits in the final build report.
-
-### Learned Rules
-
-- Name scaffold/design phases explicitly so future agents do not mistake a
-  safety contract for a shipped runtime feature; when a slice enables any live
-  capability, say so in the report headline.
-- For sensitive integrations, require a no-enablement sweep in every slice QA:
-  commands, UI controls, background workers, network paths, secret paths, and
-  execution surfaces.
-- Define ambiguous safety terms precisely in the artifact itself; avoid relying
-  on shorthand like "metadata-only" without listing forbidden data classes.
-- When a staged roadmap reaches its first live-capability slice, pause for user
-  acknowledgement before batching later phases, even if the technical gates
-  pass.
-- QA that changes persistent user/app state must restore that state before the
-  slice is called done, then record both the mutation and restoration in the QA
-  evidence.
-- For staged capabilities, keep permission/grant copy separate from live
-  connection state, and add negative guards for controls or commands that must
-  not exist yet.
-- For migration/import work, previews must be derived from validated dry-run
-  artifacts and pass no-leak checks before adding any real scanner, source
-  picker, or importer path.
+Keep learning lean. Record strong prompt shapes, confirmed confusion or drift, circuit-breaker events, better slice sizes, and cost observations. Promote only confirmed, reusable rules; merge or replace existing rules instead of growing an unbounded list. Use `auto-reflect` for durable recurrence handling.
 
 ## Security Rules
 
-- Never pass secrets, tokens, cookies, keys, auth material, or signed URLs to sub-agents; redact before delegating.
-- No spending, imports, migrations, OAuth/reconnects, deployments, destructive cleanup, or external account actions without explicit user authority.
-- Third-party or imported code, tools, and connectors stay disabled until reviewed; source trust is not transferable.
-- Migration work uses dry-runs, synthetic fixtures, and rollback gates before touching real data.
+- Never pass secrets, tokens, cookies, keys, auth material, signed URLs, or unrelated private data to workers or reviewers.
+- Do not spend, import, migrate, reconnect, deploy, destructively clean, or alter external accounts without explicit authority for that action.
+- Keep third-party code, tools, and connectors disabled until reviewed; source trust is not transferable.
+- Use dry-runs, synthetic fixtures, restorable backups, parity checks, and rollback gates before real migration work.
 
 ## Final Build Report
 
-Produce one report when the scope completes: objective, final status, shipped slices, files changed, QA and verification evidence, reviewer scores and feedback disposition, security review result, unresolved or deferred items, commit/PR status, lessons learned, and any skill updates made. The scope is not complete until research, plan, implementation, review, security review, QA, and this report all exist — or a genuine blocker is recorded.
+Report the objective, final status, completed plan items, files changed, verification tiers, RED/GREEN evidence, execution receipts, regression delta, review disposition, security result, checkpoint state, unresolved plan items, and exact blocker/resume point. Do not invent adjacent next steps after the assigned plan is complete.

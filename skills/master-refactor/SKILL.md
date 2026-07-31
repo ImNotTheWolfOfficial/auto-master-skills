@@ -1,48 +1,46 @@
 ---
 name: master-refactor
-description: Plan and execute safe behavior-preserving refactors for authorized local projects. Use when the user asks for Master-Refactor, master-refactor, full repo refactor review, feature refactor review, cleanup candidates, optimization candidates, code simplification, refactor planning, or periodic refactor maintenance. Starts with analysis and a candidate report before any code changes, then uses isolated implementation and QA only after approval.
+description: Plan and execute safe behavior-preserving refactors for authorized local projects. Use for Master-Refactor, repo or feature cleanup, code simplification, periodic maintenance sweeps, optimization candidates, or refactor planning. Starts with measured analysis and a ranked candidate report, requires approval before code, then uses isolated slices, characterization tests, execution receipts, and regression deltas.
 ---
 
 # Master-Refactor
 
-Use this skill to identify, propose, implement, and verify refactors that make the repo or feature leaner, more optimized, and cleaner — without changing behavior.
+Find, approve, implement, and verify refactors that make code leaner without changing observable behavior.
 
 ## Core Rules
 
-- Start with analysis only. There is no path to code changes that skips the approval gate.
-- The approval gate sits **after research, before planning**: stop and present the candidate report (what can / should / could be refactored, each with a verdict) and wait for the user's pick.
-- Refactors must preserve observable behavior. Any behavior change is ejected into a separate proposal.
-- Read the refactor log from previous runs before discovering candidates; never re-propose rejected candidates without new evidence.
-- Capture baselines before implementation: metrics, a git snapshot, and UI screenshots for frontend-visible areas.
-- Add characterization tests first when current behavior is under-tested. Never refactor untested code.
-- Implement only in an isolated branch or git worktree. Never touch main/master directly.
-- Run QA after each approved slice and at the end; UI-visible work always passes auto-qa's Frontend Gate.
-- Merge to main/master only after the full approved set is complete, thoroughly tested, and explicitly approved.
-- Write reports and logs outside the repo under `~/.codex/artifacts/<project-slug>/refactor/`.
-- Never name generated files or doc content after AI models or providers.
-- Preserve unrelated user work. No destructive commands without explicit approval. Never print secrets, tokens, private keys, certs, or private local data.
+- Start analysis-only. Stop after the ranked candidate report and wait for the user to select scope; no planning or code skips this gate.
+- In maintenance mode, rank a bounded top set by value/risk and record the rest in the log. Never automatically delete, rewrite, or "clean everything."
+- Read the refactor log first. Do not re-propose rejected work without new evidence.
+- Capture the baseline commit, dirty state, relevant metrics, existing gates, and UI screenshots before implementation.
+- Add characterization tests before moving weakly covered behavior. They must pass before and after a behavior-preserving refactor; do not manufacture RED for structural-only work.
+- If implementation changes behavior, eject it into a separate Auto proposal with RED -> GREEN acceptance proof.
+- Implement only in an isolated owned branch/worktree; never on main/master.
+- Require execution receipts and a regression delta for each slice and the final set.
+- Run `auto-qa` per slice and at the end; every UI-visible slice requires the Frontend Gate.
+- Merge only after the entire approved set is complete, QA-clean, and explicitly approved.
+- Store reports under `~/.auto-master/artifacts/<project-slug>/refactor/`.
+- Preserve unrelated work; do not destructively clean or print secrets.
 
 ## Pipeline
 
-1. Startup: confirm repo, slug, branch, worktree state; read the refactor log.
-2. **Research** — `$auto-research` (or an inline equivalent for small scope) maps the target, dependents, coverage, and hot paths. Reuse the Master-Docs graph/manifest when present.
-3. **Baseline** — capture before-metrics and snapshots.
-4. **Candidate report + STOP** — rank candidates, give verdicts, wait for the user's pick.
-5. **Plan** — `$auto-plan` the approved set.
-6. **Isolate** — dedicated branch/worktree `refactor/<date>-<topic>`.
-7. **Execute** — `$auto-pilot`, one bounded slice at a time; characterization tests first where coverage is weak.
-8. **Verify** — `$auto-qa` per slice and a full pass at the end.
-9. **Merge** — only after full completion, clean QA, and explicit approval.
-10. **Log** — append the run entry, including negative findings.
+1. **Startup** - confirm repo/branch/worktree; read the log; define scope and expected audit outputs.
+2. **Research** - use `auto-research` or a lean inline map; trace dependents, coverage, hot paths, and existing conventions.
+3. **Baseline** - capture git, metrics, gates, and UI state.
+4. **Candidate report + STOP** - rank recommended/optional/not-recommended candidates and wait for selection.
+5. **Plan** - use `auto-plan` on the approved set; classify slices Micro/Small/Full.
+6. **Isolate** - create the approved dedicated branch/worktree.
+7. **Execute** - use `auto-pilot`, one bounded slice at a time. Keep characterization tests green before/after and receipts current.
+8. **Verify** - use `auto-qa` per slice and a full integrated pass; compare every after-signal with baseline.
+9. **Merge** - only after completion, clean QA, and explicit user approval.
+10. **Log** - append outcomes, regression deltas, confirmed failures, rejected ideas, and do-not-retry evidence.
 
-For multi-phase refactors, `$auto-manage` acts as manager and owns the slice queue.
+For multi-phase refactors, `auto-manage` owns the queue. Honor its five-attempt circuit breaker: after the same failure twice, diagnose or shrink the slice; never continue blind retries.
 
 ## References
 
-Read these references as needed:
-
-- `references/workflow.md` for the full refactor lifecycle.
-- `references/candidate-report.md` before presenting refactor options.
-- `references/baselines-and-metrics.md` before measuring current state.
-- `references/isolation-and-qa.md` before implementing approved changes.
-- `references/refactor-log.md` before reading or writing the outside-repo log.
+- Read `references/workflow.md` before starting.
+- Read `references/candidate-report.md` before presenting options.
+- Read `references/baselines-and-metrics.md` before measurement.
+- Read `references/isolation-and-qa.md` before implementation.
+- Read `references/refactor-log.md` before log access.

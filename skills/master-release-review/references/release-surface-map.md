@@ -5,7 +5,7 @@ How the skill decides what to review and how deeply. Depth follows trust boundar
 ## Preferred Input: Master-Docs Manifest
 
 ```text
-~/.codex/artifacts/<project-slug>/manifests/master-docs-manifest.json
+~/.auto-master/artifacts/<project-slug>/manifests/master-docs-manifest.json
 ```
 
 When the manifest exists:

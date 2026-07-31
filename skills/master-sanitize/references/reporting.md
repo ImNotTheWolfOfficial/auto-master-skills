@@ -5,7 +5,7 @@ The report is actionable, masked, and lives outside the repo.
 ## Report Path
 
 ```text
-~/.codex/artifacts/<project-slug>/sanitize/<date>-master-sanitize-report.md
+~/.auto-master/artifacts/<project-slug>/sanitize/<date>-master-sanitize-report.md
 ```
 
 ## Report Format

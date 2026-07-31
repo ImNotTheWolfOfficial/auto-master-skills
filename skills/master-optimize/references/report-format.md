@@ -1,75 +1,61 @@
 # Optimization Report Format
 
-The report is the deliverable. The draft is written before peer review; the final version — after corrections — is what the user sees. Save to `~/.codex/artifacts/<project-slug>/optimize/optimization-report-<date>.md` and summarize it in chat.
+Save to `~/.auto-master/artifacts/<project-slug>/optimize/optimization-report-<date>.md`.
 
-## Structure
+## Template
 
-```md
+```markdown
 # Master-Optimize Report
 
-Project: <project-slug>
-Mode: <full | focus: <scope>>
+Project: <slug>
+Mode: <full | focus: scope>
 Date: <date>
-Branch / commit: <branch> @ <sha>
-Status: DRAFT (pre-review) | FINAL (peer-reviewed)
+Branch / commit: <branch @ sha>
+Status: DRAFT (independent review blocked) | FINAL (self-verified) | FINAL (independently reviewed)
 
 ## Summary
-
-<3–6 sentences: overall resource health, the top findings, and where the biggest user-facing wins are>
+<resource health, top findings, biggest user-facing wins>
 
 ## Findings Overview
-
 | # | Finding | Category | Resource | Severity | Confidence | Effort | Verdict |
 |---:|---|---|---|---|---|---|---|
-| 1 | Example | memory leak | memory | high | high | low | recommended |
 
 ## Findings
 
-### <#>. <finding name>
-
-Category: <from finding-categories.md>
-Resource: <memory / CPU / GPU-render / network / disk / battery>
-Severity: high / medium / low   Confidence: high / medium / low   Effort: low / medium / high
-Verdict: recommended / optional / not recommended
-
-Location:
-<file:line references — this report is private/internal, so paths are fine>
-
-Mechanism:
-<what consumes the resource, when, and why it's unnecessary — the causal chain>
-
-User impact:
-<what the user experiences or pays: growing memory, jank, slow startup, data usage — measured where possible, marked as estimate otherwise>
-
-Leaner alternative:
-<the fix sketch, and whether it preserves observable behavior>
-
-Measurement:
-<numbers gathered, or "not measured: <reason>" — never an estimate presented as measured>
+### <#>. <name>
+- Category / resource:
+- Severity / confidence / effort / verdict:
+- Location: <file:line>
+- Evidence type: measured | read in source | hypothesis
+- Mechanism:
+- User impact:
+- Leaner alternative and behavior impact:
+- Measurement or reason unavailable:
 
 ## Coverage
+<categories/areas scanned, skipped with reason, and checked-clean areas>
 
-<categories scanned per area; categories skipped and why; areas checked and found clean>
+## Measurement Receipts And Baseline Delta
+| Measurement | Exact command | Timestamp | Exit/result | Evidence | Prior baseline | Delta |
+|---|---|---|---|---|---|---|
 
-## Peer Review
-
-Reviewer verdict per finding: confirmed / corrected / refuted (dropped) / disputed (kept, confidence lowered)
-Gaps the reviewer found that were verified and added: <list, or none>
-Reviewer suggestions rejected on verification, and why: <list, or none>
+## Verification And Review
+- Self-verification performed:
+- Independent-review trigger:
+- Independent review: used | skipped | blocked, with reason
+- When used: verdicts, verified additions, rejected suggestions, disputes
 
 ## History Check
+<prior fixed/dismissed findings and why they were or were not re-reported>
 
-<findings from the optimize log previously fixed or dismissed, and why each is or is not re-reported>
-
-## Recommended Next Step
-
-<which findings justify a $master-refactor run (behavior-preserving) vs. a separate proposal (behavior-changing); no implementation in this run>
+## In-Scope Handoff
+<findings suitable for master-refactor versus a separately authorized behavior-change proposal>
 ```
 
 ## Rules
 
-- Rank findings by user impact (severity × confidence), not discovery order.
-- Include "not recommended" findings (e.g. real but micro on cold paths) so the user sees what was considered and ruled out.
-- Severity reflects the user's cost; confidence reflects the evidence. Never inflate either.
-- The Coverage and Peer Review sections are mandatory — a report without them is a draft.
-- Paths and internals are fine (private report); secrets and sensitive values are not.
+- Rank by user impact and confidence, not discovery order.
+- Include not-recommended findings so ruled-out work is visible.
+- Separate measured evidence from estimates/hypotheses.
+- Coverage and Verification And Review are mandatory. If required review is blocked, the report remains a draft.
+- Internal paths are acceptable; secrets are not.

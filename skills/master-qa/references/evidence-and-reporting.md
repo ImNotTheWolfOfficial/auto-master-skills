@@ -1,72 +1,74 @@
-# Evidence and Reporting
+# Evidence And Reporting
 
-The report is the deliverable: an evidence-backed decision a future maintainer can trust without re-running anything.
+Write a report a future owner can trust without rerunning the release sweep.
 
-## Report Path
+## Path
 
-```text
-~/.codex/artifacts/<project-slug>/qa/<date>-master-qa-report.md
-```
+`~/.auto-master/artifacts/<project-slug>/qa/<date>-master-qa-report.md`
 
-Screenshots and other evidence files live beside it under `qa\<date>-evidence\`. Everything outside the repo unless the project explicitly expects QA reports in-repo.
+Store screenshots and supporting artifacts beside it under `<date>-evidence/`. Keep them outside the repo unless repo policy explicitly requires in-repo QA records.
 
-## Report Format
+## Template
 
-```md
+```markdown
 # Master-QA Report - <project> - <date>
 
-Decision: GO / NO-GO / GO WITH KNOWN ISSUES
-
+Decision: GO | NO-GO | GO WITH KNOWN ISSUES
 Release target: <version/artifact/deployment surface>
-Scope: <repo-wide / feature / installer / patch>
+Scope: <repo-wide/feature/installer/patch>
 Commit: <sha>
 
 ## Summary
+<plain-language decision and why>
 
-<short plain-language summary of the decision and why>
+## Baseline Block
+- Prior release/report:
+- Artifact/commit:
+- Environment/profile:
+- Inherited failures:
+- Measured signals:
 
 ## Blockers And High-Priority Issues
-
-| Severity | Area | Issue | Evidence | Required Action |
+| Severity | Area | Issue | Evidence | Required action |
 |---|---|---|---|---|
 
 ## QA Matrix
-
 | Area | Check | Method | Evidence | Result | Notes |
 |---|---|---|---|---|---|
 
 ## Release Gates
-
 | Gate | Result | Evidence | Notes |
 |---|---|---|---|
 
 ## Evidence Reuse
-
-| Reused Evidence | Source Artifact | Captured | Why Still Valid |
+| Evidence | Artifact | Captured | Why still valid |
 |---|---|---|---|
 
-## Evidence
+## Execution Receipts
+| Gate | Exact command/flow | Timestamp | Exit/result | Evidence | Environment |
+|---|---|---|---|---|---|
 
-<paths to screenshots, generated reports, command summaries, logs, or artifacts — all outside the repo>
+## Regression Delta
+| Signal | Baseline | Current | Delta | Classification |
+|---|---|---|---|---|
+
+## Judgment Gates
+| Criterion | Reviewer/method | Result | Evidence | Notes |
+|---|---|---|---|---|
 
 ## Not Tested / Blocked
-
-<what could not be tested and why, and what would unblock it>
+<what, why, risk, and exact unblocker>
 
 ## Known Issues For Release Notes
-
-<customer-safe known issues if release proceeds — plain language, no internals,
-written so they can feed public documentation directly>
+<customer-safe plain language; no internal paths/identifiers>
 
 ## Final Recommendation
-
-<clear next action>
+<clear release action>
 ```
 
 ## Rules
 
-- Every non-pass result carries evidence or a reason — "should work" is not evidence.
-- Reused `$auto-qa` evidence is cited with its artifact path and capture date; anything changed since capture gets re-verified instead.
-- Do not paste secrets, tokens, private keys, certs, passwords, cookies, auth headers, signed URLs, or private environment values. Summarize sensitive checks as SET/MISSING or masked.
-- The Known Issues section follows public-doc discipline: product behavior in plain language, no file names, paths, or internal identifiers.
-- Include enough evidence for a future agent to understand the decision without re-running the sweep — the report doubles as the baseline for the next release's regression comparison.
+- Every claimed gate has a receipt. A summary without exit/result and evidence is not proof.
+- Cite reused `auto-qa` evidence by artifact and date; reverify anything changed since capture.
+- Do not paste secrets, auth values, or giant raw logs. Use SET/MISSING or masked values and concise output/artifact paths.
+- Treat the report as the next release's baseline.

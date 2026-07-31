@@ -1,35 +1,30 @@
-# Peer Review
+# Selective Independent Review
 
-The draft report is never presented directly. One reviewer sub-agent verifies it and hunts for gaps; the main agent applies corrections and finalizes. This is a quality gate, not a second audit — one reviewer, one pass (recycle an existing reviewer sub-agent when one is available; never spawn a swarm).
+Self-verification is always required. Add one fresh-context independent reviewer only when a concrete risk trigger makes separation worth the cost.
+
+## Triggers
+
+Review is required when the draft contains at least one of:
+
+- a High-severity finding;
+- a security, auth, privacy, data-safety, execution/sandbox, release, or shared-contract boundary;
+- a broad architectural rewrite/dependency recommendation;
+- a high-impact claim whose evidence depends on nontrivial measurement or uncertain attribution.
+
+For ordinary Medium/Low focus findings with direct source evidence, skip independent review and mark the report `FINAL (self-verified)`. If required review is unavailable, mark it `DRAFT (independent review blocked)`; do not imply a completed review.
 
 ## Reviewer Brief
 
-Give the reviewer a fresh, self-contained brief:
+Give one reviewer only the draft, scope map, bounded source locations, measurement receipts, and checklist. Do not provide conclusions beyond the raw draft or any secrets.
 
-- the draft report (full text or path)
-- the scope map from the research phase (runtime shape, hot paths, areas scanned)
-- read access to the repo
-- the finding-categories checklist
+Ask the reviewer to:
 
-Instruct the reviewer to do two jobs, in order:
+1. verify each cited mechanism, severity, path temperature, and proposed alternative as confirmed/corrected/refuted;
+2. identify material scope gaps, with `file:line` and mechanism for every proposed addition;
+3. distinguish measured evidence, source reading, and hypothesis.
 
-1. **Verify** — for each finding, open the cited code and check: does the mechanism actually exist as described? Is the severity honest for the path temperature? Is the leaner alternative actually behavior-preserving where claimed? Verdict per finding: **confirmed / corrected** (with the correction) **/ refuted** (with the evidence).
-2. **Gap-fill** — sweep the scope for what the draft missed: categories skipped without justification, files in scope never mentioned, obvious instances of a reported pattern elsewhere in scope, and hot paths with no findings and no checked-clean note. Each proposed addition needs the same evidence bar as an original finding: `file:line` plus mechanism.
+The reviewer does not modify code or the report.
 
-The reviewer does not modify project code or the report file — it returns verdicts and proposed additions.
+## Applying Review
 
-## Applying the Review
-
-- **Confirmed** — keep as-is.
-- **Corrected** — verify the correction against the code, then apply.
-- **Refuted** — check the reviewer's evidence; if it holds, drop the finding (record it in the log as dismissed, with the reason); if it doesn't, treat as disputed.
-- **Disputed** (either side unproven) — keep the finding, note both positions, lower confidence.
-- **Proposed additions** — verify each against the code yourself before adding. An addition that fails verification is recorded in the report's Peer Review section as rejected, with the reason.
-
-Fill the report's Peer Review section, flip the status line from DRAFT to FINAL, and only then present to the user.
-
-## Rules
-
-- Peer review is mandatory even for small focus-mode runs; for a tiny scope the reviewer's brief is proportionally tiny.
-- If the reviewer cannot run (tooling failure), say so explicitly to the user and present the report clearly labeled DRAFT / unreviewed — never silently skip the gate.
-- Reviewer output is advice with evidence, not authority: nothing enters or leaves the report without the main agent confirming it in the code.
+Verify every correction and addition against source. Keep confirmed findings, apply grounded corrections, drop proven refutations, and mark unproven disagreements as disputed with lower confidence. Record rejected reviewer suggestions. One reviewer and one pass are enough unless a distinct critical specialty question remains.

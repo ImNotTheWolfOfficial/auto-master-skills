@@ -5,7 +5,7 @@ The denylist is the shared private vocabulary of things that must never appear i
 ## Path (outside every repo)
 
 ```text
-~/.codex/artifacts/_private/sanitize-denylist.json
+~/.auto-master/artifacts/_private/sanitize-denylist.json
 ```
 
 ## Contents

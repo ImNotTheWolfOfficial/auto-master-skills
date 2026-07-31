@@ -5,12 +5,12 @@ description: Use when the user asks for /auto-research, auto research, autoresea
 
 # Auto Research
 
-Turn the current discussion into a research-scope artifact, get the scope approved, then execute the research. This skill never implements: no code changes, no refactors, no fixes — research and its write-up only. Its output feeds `$auto-plan`.
+Turn the current discussion into a research-scope artifact, get the scope approved, then execute the research. This skill never implements: no code changes, no refactors, no fixes — research and its write-up only. Its output feeds `auto-plan`.
 
 ## Stage 1 — Scope (always first; stops at an approval gate)
 
 1. Capture the objective and what is already known from the discussion and any repo evidence at hand.
-2. Write the research-scope `.md` to `~/.codex/artifacts/<project>/<topic>-research-<date>.md` (same storage rule as auto-plan: outside repos unless the user asks for a repo-owned doc; never name files or content after AI models or providers).
+2. Write the research-scope `.md` to `~/.auto-master/artifacts/<project>/<topic>-research-<date>.md` (same storage rule as auto-plan: outside repos unless the user asks for a repo-owned doc; never name files or content after AI models or providers).
 3. List every research item needed to write a solid development plan, split into:
    - **Internal** — our codebase: systems/files to inspect, current behavior to confirm, constraints, integration points, existing tests and conventions.
    - **External** — outside sources: repos to mine for ideas, docs, APIs, standards, comparable products.
@@ -22,7 +22,7 @@ Turn the current discussion into a research-scope artifact, get the scope approv
 
 1. Work items in priority order. Read internal sources directly; batch external lookups.
 2. Write findings into the artifact (or a sibling `-findings.md` when large): per item, a tight summary with file paths/links as citations — never pasted dumps. Mark each item answered, partially answered, or blocked with the reason.
-3. Close with: key findings, decisions the findings force, open questions that still need the user, and a readiness call for `$auto-plan`.
+3. Close with: key findings, decisions the findings force, open questions that still need the user, and a readiness call for `auto-plan`.
 
 ## Token Economy
 

@@ -11,7 +11,7 @@ Build the matrix before running long checks. It is the plan, the tracker, and (f
 | Main journey | First-run happy path | browser/app check | screenshot/path | pass/fail/blocked | |
 ```
 
-Valid results: `pass`, `fail`, `blocked`, `reused` (fresh `$auto-qa` evidence accepted — cite the artifact), `skipped` (with reason). A required gate can never move from `blocked`/`skipped` to `pass` without actually running.
+Valid results: `pass`, `fail`, `blocked`, `reused` (fresh `auto-qa` evidence accepted — cite the artifact), `skipped` (with reason). A required gate can never move from `blocked`/`skipped` to `pass` without actually running.
 
 ## Recommended Categories
 

@@ -24,13 +24,13 @@ Full public-readiness review process. Load this before starting.
 - Report root:
 
 ```text
-~/.codex/artifacts/<project-slug>/sanitize/
+~/.auto-master/artifacts/<project-slug>/sanitize/
 ```
 
 - Private denylist path (see `private-denylist.md`):
 
 ```text
-~/.codex/artifacts/_private/sanitize-denylist.json
+~/.auto-master/artifacts/_private/sanitize-denylist.json
 ```
 
 ## 3. Review Mode (default: read-only)

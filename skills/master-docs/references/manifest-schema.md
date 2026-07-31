@@ -2,7 +2,7 @@
 
 The manifest is the diff engine for incremental runs. It lives outside the repo at:
 
-`~/.codex/artifacts/<project-slug>/manifests/master-docs-manifest.json`
+`~/.auto-master/artifacts/<project-slug>/manifests/master-docs-manifest.json`
 
 ## Schema
 

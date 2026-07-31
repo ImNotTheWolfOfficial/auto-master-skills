@@ -1,37 +1,38 @@
 ---
 name: auto-pilot
-description: Use when the user asks for auto-pilot behavior, autonomous roadmap execution, or continued project work until complete or blocked.
+description: Execute an approved roadmap autonomously in small verified slices until complete or genuinely blocked. Use when the user asks for auto-pilot, autonomous roadmap execution, continued implementation, or bounded development with risk-tiered tests, execution receipts, regression checks, and loop protection.
 ---
 
 # Auto-Pilot
 
-Work the roadmap autonomously in small verified slices. Stop only when complete or genuinely blocked by credentials, external access, hardware, deployment authority, or user-only product/legal decisions.
+Execute the roadmap in small, recoverable slices. Preserve unrelated work and stop only for a genuine authority/external blocker or the circuit breaker below.
 
-## Loop
+## Slice Loop
 
-1. Establish objective, repo, branch, dirty state, roadmap/checklist source, and next smallest useful slice.
-2. Preserve unrelated user work. Inspect dirty files before editing; avoid destructive Git operations unless explicitly requested.
-3. Implement one bounded slice end to end. Match existing architecture and style; update docs/roadmap/checklists only to reflect evidence.
-4. Run the strongest relevant local verification. Fix relevant failures before checkpointing; report skipped or failed checks plainly. When paired with `auto-qa`, run its focused gates on each slice as it lands — including the Frontend Gate for UI slices — and a full risk-matched pass at the end.
-5. At milestones, request review only when it adds value. Prefer reusing an existing reviewer/thread for the same repo/objective; send a bounded diff, changed files, verification evidence, and specific questions. Spawn at most one fresh reviewer per milestone when no reusable reviewer exists and the risk justifies the cost.
-6. While review runs, continue only on non-overlapping work that cannot invalidate the review context.
-7. Evaluate feedback directly. Fix real, relevant issues; reject or record incorrect, speculative, duplicate, stale, blocked, or out-of-scope feedback.
-8. Commit intentional checkpoints when verified and safe. Push only when a remote, credentials, and branch workflow make it safe.
-9. Repeat until complete or blocked; record exact blocker, evidence, partial work, verification status, and smallest user action needed.
+1. Confirm the objective, repo, owned branch, dirty state, roadmap source, and next unresolved slice.
+2. Define the expected changed-file allowlist and classify the slice: **Micro**, **Small**, or **Full** using `auto-manage`'s verification kernel.
+3. Capture a `BASELINE_BLOCK`: commit, relevant dirty state, current symptom or gate result, expected result, and affected surfaces.
+4. For behavior-changing code, establish **RED** with a failing test or reproducible check before editing. For non-behavioral docs/copy/config work, use a deterministic before/after check instead. Record why when a runnable RED check is genuinely impossible.
+5. Implement one bounded slice in the existing architecture. Keep the diff narrow; update roadmap/docs only to match evidence.
+6. Establish **GREEN** with the same check, then run the tier's relevant gates. When paired with `auto-qa`, include its Frontend Gate for user-facing work.
+7. Write an `EXECUTION_RECEIPT` for each claimed gate: exact command/flow, timestamp, exit/result, concise output/evidence path, and material environment details.
+8. Record a `REGRESSION_DELTA`: before versus after failures/metrics, including any new failure. Test one adjacent path for Small/Full slices.
+9. Trigger review only when risk warrants it. Use one fresh-context reviewer for Full-tier security/auth/data/migration/execution/shared-contract/release/refactor work; do not spawn reviewers for Micro work.
+10. Audit the final diff against the allowlist, checkpoint coherent verified work, and repeat until the assigned roadmap is complete.
 
-## Checkpoint Stand-In
+## Circuit Breaker
 
-When a checkpoint needs feedback or a routine go/no-go and the user is absent, delegate the decision to a stand-in reviewer acting on the user's behalf — reuse the existing reviewer/thread for this repo/objective when one exists. Give it the checkpoint question, the bounded diff or evidence, and the options considered; record its decision and rationale in the checkpoint report, then continue.
+- Limit a slice to five implementation/fix attempts.
+- After the same or equivalent failure twice, stop repeating commands or patches. Inspect actual state, isolate the cause, and revise the hypothesis or shrink the slice.
+- Resume only with new evidence. If no safe evidence-backed path remains, preserve the checkpoint and report the blocker.
+- Use `auto-reflect` only for a confirmed mistake, disproven claim, or repeated-failure event; expected RED tests and unrelated machine failures do not qualify.
 
-The stand-in may approve routine, reversible development choices only. It may never approve spending, credentials, external accounts, production deploys, destructive operations, or legal/product decisions — those stop the run for the real user.
+## Review And Delegation
 
-## Boundaries
+Work inline by default. Use a worker only for independent bounded work when parallelism or context isolation materially helps. Reuse a warm reviewer only when repo and objective match. Evaluate feedback against source and evidence; reject speculative, stale, duplicate, or out-of-scope advice.
 
-- Sub-agents may review, explore, or implement bounded repo slices only.
-- Sub-agents cannot approve spending, grant access, provide secrets, use external accounts, accept legal risk, or make user-only product decisions.
-- Do not pass secrets, auth material, private keys, cookies, tokens, signed URLs, unrelated private info, or unnecessary local identity details to reviewers.
-- Never store secrets in code, commits, roadmaps, or review prompts.
+A stand-in may approve routine reversible development choices only. It may not approve spending, credentials, external accounts, production deployment, destructive actions, or product/legal decisions.
 
 ## Checkpoint Report
 
-Report objective/slice, files changed, roadmap/docs updates, verification results, review feedback accepted/rejected/deferred, commit/push status, and remaining work or blocker.
+Report the slice, verification tier, changed files, baseline, RED/GREEN proof, execution receipts, regression delta, review disposition, commit/push state, completed roadmap items, and exact remaining plan item or blocker. If the roadmap is complete, say so without adding unrelated suggestions.

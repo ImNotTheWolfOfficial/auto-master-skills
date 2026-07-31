@@ -11,7 +11,7 @@ Use this skill to review a repo, branch, or export candidate before public shari
 
 - Default to review/report only. No file deletion, history editing, force-pushing, or publishing without explicit approval for that exact action.
 - Review everything that would go public: for pre-push reviews, scan all outgoing refs (branches and tags), not just HEAD — a secret on a side branch leaks the moment it is pushed.
-- Write reports outside the repo under `~/.codex/artifacts/<project-slug>/sanitize/`.
+- Write reports outside the repo under `~/.auto-master/artifacts/<project-slug>/sanitize/`.
 - Read private denylist entries only from outside repos. Never copy the denylist into a repo. Never print full denylist contents.
 - Never print secrets, tokens, private keys, certs, passwords, auth headers, cookies, signed URLs, or private environment values.
 - Report sensitive findings as masked, summarized, or SET/MISSING.
