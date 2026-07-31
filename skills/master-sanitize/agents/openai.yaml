@@ -1,0 +1,4 @@
+interface:
+  display_name: "Master Sanitize"
+  short_description: "Leak and confidentiality review before going public"
+  default_prompt: "Use $master-sanitize to review this repo for public-release readiness — secrets, confidential leaks, denylist hits — and write a masked findings report outside the repo."

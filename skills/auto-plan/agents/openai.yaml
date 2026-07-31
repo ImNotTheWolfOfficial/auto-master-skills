@@ -1,0 +1,4 @@
+interface:
+  display_name: "Auto Plan"
+  short_description: "Lean plans with scored review"
+  default_prompt: "Use $auto-plan to draft a plan, self-review it, reuse a reviewer only when needed, and report readiness."

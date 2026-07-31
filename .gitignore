@@ -1,0 +1,17 @@
+.DS_Store
+Thumbs.db
+.env
+.env.*
+*.log
+*.pem
+*.key
+*.p12
+*.pfx
+node_modules/
+dist/
+tmp/
+temp/
+__pycache__/
+.pytest_cache/
+.codex/
+artifacts/

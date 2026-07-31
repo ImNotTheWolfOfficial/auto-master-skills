@@ -1,0 +1,4 @@
+interface:
+  display_name: "Auto Copy"
+  short_description: "Port external codebases natively into your project"
+  default_prompt: "Use $auto-copy to review that repo, plan a behavior-by-behavior extraction, and rebuild what we need natively in this project with per-feature QA."

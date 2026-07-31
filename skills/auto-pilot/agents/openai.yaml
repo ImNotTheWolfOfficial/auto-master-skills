@@ -1,0 +1,4 @@
+interface:
+  display_name: "Auto-Pilot"
+  short_description: "Autonomous roadmap execution loop"
+  default_prompt: "Use $auto-pilot to continue the roadmap with small verified checkpoints and reviewer reuse."

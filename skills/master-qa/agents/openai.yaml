@@ -1,0 +1,4 @@
+interface:
+  display_name: "Master QA"
+  short_description: "Release-candidate QA gate with a GO / NO-GO report"
+  default_prompt: "Use $master-qa to run a release-candidate quality gate for this repo or app, including release-only gates and the Frontend Gate, and write an evidence-backed GO / NO-GO report outside the repo."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Master Refactor"
+  short_description: "Safe, isolated, logged behavior-preserving refactors"
+  default_prompt: "Use $master-refactor to review this repo or feature for refactor candidates, stop with a ranked report for my approval, then implement in isolation with baselines, tests, and a log."

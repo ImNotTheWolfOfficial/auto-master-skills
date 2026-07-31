@@ -1,0 +1,4 @@
+interface:
+  display_name: "Auto Doc"
+  short_description: "Complete source-grounded docs corpus"
+  default_prompt: "Use $auto-doc to build a complete source-grounded private/public docs corpus for this project."

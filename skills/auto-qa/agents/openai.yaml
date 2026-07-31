@@ -1,0 +1,4 @@
+interface:
+  display_name: "Auto QA"
+  short_description: "Risk-matched QA with real frontend verification"
+  default_prompt: "Use $auto-qa to validate this change with focused deterministic checks and real frontend verification when the UI is affected."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Master Docs"
+  short_description: "Private technical docs plus public-safe docs"
+  default_prompt: "Use $master-docs to document this repo or feature, producing internal technical docs and public-safe customer docs outside the repo."

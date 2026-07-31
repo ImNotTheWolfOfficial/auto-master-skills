@@ -1,0 +1,4 @@
+interface:
+  display_name: "Auto Research"
+  short_description: "Research scope before planning"
+  default_prompt: "Use $auto-research to write the research-scope artifact for what we just discussed, suggest additional research angles, and stop for my approval before executing the research."
