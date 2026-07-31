@@ -11,7 +11,7 @@ Use this skill to review whether a project, app, package, installer, or patch is
 
 - Use only on local projects the user owns or is authorized to review.
 - Default to review/report only. Do not change code unless the user explicitly asks for fixes after the report.
-- Write reports outside the repo under `~/.codex/artifacts/<project-slug>/release-review/`.
+- Write reports outside the repo under `~/.auto-master/artifacts/<project-slug>/release-review/`.
 - Prefer repo-native checks and existing project scripts before creating new checks.
 - Prefer static review, configuration review, dependency review, and production-build inspection.
 - Let the trust-boundary map drive depth: entry points, data flows, privilege levels, and external dependencies get the closest review.

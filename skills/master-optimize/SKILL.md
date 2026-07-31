@@ -1,42 +1,43 @@
 ---
 name: master-optimize
-description: Systematic resource-efficiency audit of a repo or feature for authorized local projects. Use when the user asks for Master-Optimize, master-optimize, performance review, resource audit, memory leak hunt, rendering bloat check, display performance issues, wasted CPU/memory/network, or ways to make working code leaner. Produces a findings report that is peer-reviewed by a sub-agent before being presented; analysis only, no code changes.
+description: Audit an authorized local repo or feature for wasted memory, CPU, rendering, network, disk, battery, and unnecessary complexity. Use for Master-Optimize, performance review, resource audits, leak hunts, rendering bloat, or lean-code opportunities. Produces an evidence-backed analysis report with measurement receipts and risk-triggered independent review; it never changes project code.
 ---
 
 # Master-Optimize
 
-Use this skill to systematically review a repo (or a scoped feature) for code that puts unnecessary strain on user resources — memory leaks, display/rendering issues, rendering bloat, wasted CPU/network/disk work — and for working code that could run leaner. The deliverable is a peer-reviewed findings report, not code changes.
+Produce a source-grounded resource-efficiency report. Do not implement fixes in this run.
 
 ## Core Rules
 
-- **Analysis only.** This skill never modifies project code. Approved fixes are handed off to `$master-refactor` (behavior-preserving) or the `$auto-` pipeline (behavior-changing) as a separate run.
-- Every finding must cite evidence: `file:line` plus the mechanism of waste ("listener added in X, never removed"). No vibes-based findings; uncertain ones are marked with low confidence, not dressed up.
-- Measure where the repo makes it cheap (existing benchmarks, build stats, profilers); mark unmeasurable claims as estimates. Never present an estimate as a measurement.
-- **Peer review is mandatory.** The draft report goes to one fresh-context reviewer sub-agent that verifies findings against the code and hunts for coverage gaps. The report is presented to the user only after review corrections are applied. One reviewer, recycled if one is already available — no reviewer swarms.
-- Reviewer additions are verified against the code by the main agent before inclusion — the reviewer can be wrong too.
-- Read the optimize log from previous runs first; never re-report findings already fixed or dismissed without new evidence.
-- Two modes: **full** (entire repo) and **focus** (a feature/section, defaulting to whatever is currently under discussion). Periodic full runs may narrow to the diff since the last logged run.
-- Write reports and the log outside the repo under `~/.codex/artifacts/<project-slug>/optimize/`.
-- Never name generated files or doc content after AI models or providers.
-- Preserve unrelated user work. Never print secrets, tokens, private keys, certs, or private local data.
+- Cite `file:line`, the waste mechanism, path temperature, user impact, confidence, and a leaner alternative for every finding.
+- Label evidence as measured, read in source, or hypothesis. Never present estimates as measurements.
+- Capture execution receipts for benchmarks or measurement commands and compare with the last trustworthy baseline/report when available.
+- Read the optimize log first; do not re-report fixed/dismissed findings without new evidence.
+- Use **full** or **focus** mode. Periodic full audits may narrow unchanged clean areas using the log.
+- Independently verify every cited finding yourself. Trigger one fresh-context reviewer only when the report contains a High finding, a critical security/auth/data/execution/release boundary, a broad architectural recommendation, or a high-impact claim dependent on nontrivial measurement.
+- Ordinary Medium/Low focus reports may finish self-verified. Record why independent review was used or skipped; never imply review occurred.
+- Verify reviewer additions against source before accepting them. Reviewer advice is not authority.
+- Write reports under `~/.auto-master/artifacts/<project-slug>/optimize/`.
+- Preserve unrelated work, do not expose secrets, and never automatically delete or refactor anything.
 
 ## Pipeline
 
-1. Startup: confirm repo, slug, branch; pick mode (full/focus); read the optimize log.
-2. **Map** — `$auto-research` (or inline equivalent for small scope) maps architecture, hot paths, long-lived processes, and UI surfaces. Reuse the Master-Docs graph/manifest when present.
-3. **Scan** — sweep the scope category by category per `references/finding-categories.md`.
-4. **Draft** — write the findings report per `references/report-format.md`, ranked by user impact.
-5. **Peer review** — one reviewer sub-agent verifies and gap-fills per `references/peer-review.md`.
-6. **Correct** — apply confirmed corrections, verify reviewer additions, record disagreements.
-7. **Present** — save the final report and summarize it in chat with the top findings and a recommended next step (which findings are worth a `$master-refactor` run).
-8. **Log** — append the run entry, including dismissed findings and negative results ("checked X, clean").
+1. **Startup** - confirm repo/branch, choose full/focus, read the log, and identify the prior baseline.
+2. **Map** - use `auto-research` or a lean inline map for architecture, hot paths, resource lifecycles, and existing measurement tools.
+3. **Scan** - apply `references/finding-categories.md`; read actual code and record checked-clean areas.
+4. **Measure** - run only cheap relevant repo-native measurements and record receipts. After the same measurement failure twice, diagnose rather than retry blindly.
+5. **Draft** - rank findings by user impact and confidence using `references/report-format.md`.
+6. **Review decision** - self-verify citations; invoke the selective review in `references/peer-review.md` only at a defined risk trigger.
+7. **Correct** - confirm reviewer corrections/additions in source; record disputes honestly.
+8. **Present** - save the final or explicitly unreviewed draft report and summarize only findings already in scope.
+9. **Log** - append findings, dismissed claims, checked-clean areas, receipts, baseline delta, and review mode.
+
+Hand approved behavior-preserving fixes to `master-refactor`; hand behavior changes to the Auto pipeline as a separate authorized run.
 
 ## References
 
-Read these references as needed:
-
-- `references/workflow.md` for the full audit lifecycle.
-- `references/finding-categories.md` before scanning — the checklist of what to look for.
-- `references/report-format.md` before drafting the report.
-- `references/peer-review.md` before dispatching the reviewer.
-- `references/optimize-log.md` before reading or writing the outside-repo log.
+- Read `references/workflow.md` before auditing.
+- Read `references/finding-categories.md` before scanning.
+- Read `references/report-format.md` before drafting.
+- Read `references/peer-review.md` when deciding or running independent review.
+- Read `references/optimize-log.md` before log access.

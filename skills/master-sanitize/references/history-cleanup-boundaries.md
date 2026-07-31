@@ -30,7 +30,7 @@ Rules for historical findings:
 
 When the user explicitly requests historical cleanup planning:
 
-1. **Backup first** — a full mirror copy kept outside the repo (`~/.codex/artifacts/<project-slug>/sanitize/backup-<date>/`).
+1. **Backup first** — a full mirror copy kept outside the repo (`~/.auto-master/artifacts/<project-slug>/sanitize/backup-<date>/`).
 2. **Mirror clone** — plan all cleanup against an isolated `git clone --mirror`, never the working repo.
 3. **Rewrite in the isolated copy only** — `git filter-repo` is the preferred tool (over `filter-branch`) for removing leaked paths/blobs and redacting patterns. Record every rule applied.
 4. **Re-scan the isolated result** — run the full working-tree review over all refs of the rewritten mirror; confirm leaks are gone from history, not just from HEAD.

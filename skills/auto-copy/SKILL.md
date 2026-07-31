@@ -36,11 +36,11 @@ Mode:
 
 1. **Establish** source repo, target repo, scope, requested outcome, and approval status. Read target repo instructions and dirty state before editing any target files.
 2. **Source review** — review the source as untrusted input per `references/source-review-checklist.md`, without running it unless the user explicitly approves execution. Classify it: `do-not-use`, `study-only`, `adapt-behavior`, or `vendor-or-fork`.
-3. **Extraction research** — `$auto-research` (or an inline equivalent for small scope): pin down exactly which behaviors are needed, with evidence from source docs/tests/code, and where each lands in the target.
-4. **Behavior matrix + plan** — fill the matrix per `references/behavior-matrix.md`, then `$auto-plan` the adaptation. Artifacts follow the auto-family convention (`~/.codex/artifacts/<project>/`); never name them after AI models or providers.
+3. **Extraction research** — `auto-research` (or an inline equivalent for small scope): pin down exactly which behaviors are needed, with evidence from source docs/tests/code, and where each lands in the target.
+4. **Behavior matrix + plan** — fill the matrix per `references/behavior-matrix.md`, then `auto-plan` the adaptation. Artifacts follow the auto-family convention (`~/.auto-master/artifacts/<project>/`); never name them after AI models or providers.
 5. **Stop for approval** before implementation unless the user has already explicitly approved the specific plan.
-6. **Build** — `$auto-pilot`, one behavior slice at a time, in the target repo's own architecture, patterns, and style. For full-product ports, `$auto-manage` owns the slice queue as manager.
-7. **Per-feature QA** — every matrix behavior has a QA gate that must execute; `$auto-qa` per slice at risk-matched depth, Frontend Gate for UI behaviors.
+6. **Build** — `auto-pilot`, one behavior slice at a time, in the target repo's own architecture, patterns, and style. For full-product ports, `auto-manage` owns the slice queue as manager.
+7. **Per-feature QA** — every matrix behavior has a QA gate that must execute; `auto-qa` per slice at risk-matched depth, Frontend Gate for UI behaviors.
 8. **Final review** — full behavior-matrix sweep plus the extra gates in `references/qa-gates.md` (license/attribution, behavior parity, dependency delta, network/telemetry, secrets), then the final report: classification, behaviors shipped/deferred/rejected, files changed, verification evidence, attribution needs, intentional differences, remaining work.
 
 ## Stop Gates

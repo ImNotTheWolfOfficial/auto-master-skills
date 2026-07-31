@@ -5,18 +5,20 @@ Load this only when a detailed QA matrix/report is needed.
 ## Profiles
 
 - Focused change: trace the diff to affected surfaces; test those deeply plus one adjacent regression path.
-- Full sweep: inventory every reachable meaningful surface; mark each tested, skipped, blocked, manual_review, or not applicable.
-- Release candidate: combine deterministic gates, focused/manual flows, rollback, monitoring, and go/no-go criteria.
-- Maintenance automation: consume structured change summary, run the smallest complete profile, and return machine-readable status.
-- Incident/regression: reproduce original failure, verify fix, then test nearby failure modes and recovery.
+- Full sweep: inventory every meaningful surface; mark each tested, skipped, blocked, manual-review, or not applicable.
+- Release candidate: combine deterministic gates, user flows, rollback, monitoring, baseline comparison, and go/no-go criteria.
+- Maintenance automation: consume a structured change summary, run the smallest complete profile, and return machine-readable status.
+- Incident/regression: reproduce the original failure, verify the fix, then test nearby failure modes and recovery.
 
 ## Surface Modules
 
-Use only modules supported by the change: UI/UX, backend/API, data/migrations, auth/security/privacy, external integrations, CLI/jobs, infra/deploy/release, desktop/native/mobile, performance/reliability, observability/support, docs/developer experience.
+Use only modules supported by the change: UI/UX, backend/API, data/migrations, auth/security/privacy, external integrations, CLI/jobs, infra/deploy/release, desktop/native/mobile, performance/reliability, observability/support, and docs/developer experience.
 
 ## Test Matrix Fields
 
-For each gate capture setup, action, expected result, negative result to watch for, evidence, cleanup/reset, owner/blocker, and whether required. Cover happy path, invalid input, cancel/back/close, retry/recovery, timeout/offline/provider failure, denied/expired auth, first-run and existing-user states, cross-platform/responsive behavior, accessibility/keyboard path, redaction, persistence/migration/rollback, and monitoring.
+For each gate capture setup, action, expected result, negative result to watch for, baseline, execution receipt, cleanup/reset, owner/blocker, and whether required. Cover happy path, invalid input, cancel/back/close, retry/recovery, timeout/offline/provider failure, denied/expired auth, first-run and existing-user states, cross-platform/responsive behavior, accessibility/keyboard path, redaction, persistence/migration/rollback, and monitoring.
+
+Mechanical gates contain only deterministic criteria. Put visual quality, tone, taste, or other subjective judgments in a separate manual/model judgment row; `needs judgment` is not a mechanical failure.
 
 ## Hostile Interaction
 
@@ -31,10 +33,8 @@ For touched UI/CLI/workflow controls, test normal activation, repeat/rapid activ
 - Status: pass | fail | blocked | accepted-risk | findings-only
 - Date:
 - Reviewer:
-- Branch:
-- Commit:
-- Risk:
-- QA Profile:
+- Branch / commit:
+- Risk / QA profile:
 - Environment:
 - Rationale:
 
@@ -43,21 +43,34 @@ For touched UI/CLI/workflow controls, test normal activation, repeat/rapid activ
 - Intended behavior:
 - User/business impact:
 
+## Baseline Block
+- Environment / profile:
+- Pre-change failure, symptom, or trusted result:
+- Known inherited failures:
+
 ## Surface Map
 | Surface | Why included | Risk | Required gates |
 |---|---|---|---|
 
 ## Test Matrix
-| Gate | Steps/command | Expected | Evidence | Required |
+| Gate | Steps/command | Expected | Baseline | Required |
 |---|---|---|---|---|
 
 ## Surface Coverage
 | Surface/item | Status | Evidence | Notes |
 |---|---|---|---|
 
-## Execution Evidence
-| Gate | Result | Evidence | Notes |
-|---|---|---|---|
+## Execution Receipts
+| Gate | Exact command/flow | Timestamp | Exit/result | Evidence | Environment |
+|---|---|---|---|---|---|
+
+## Regression Delta
+| Signal | Baseline | Current | Delta | Classification |
+|---|---|---|---|---|
+
+## Judgment Gates
+| Criterion | Reviewer/method | Result | Evidence | Notes |
+|---|---|---|---|---|
 
 ## Findings
 | ID | Severity | Surface | Finding | Repro/evidence | Expected | Actual | Owner/next |

@@ -5,7 +5,7 @@ How Master-QA decides what to test. Coverage starts from a complete surface map 
 ## Preferred Input: Master-Docs Manifest
 
 ```text
-~/.codex/artifacts/<project-slug>/manifests/master-docs-manifest.json
+~/.auto-master/artifacts/<project-slug>/manifests/master-docs-manifest.json
 ```
 
 When the manifest exists:

@@ -1,4 +1,4 @@
 interface:
   display_name: "Auto Manage"
-  short_description: "Manage large builds with sub-agents"
-  default_prompt: "Use $auto-manage to turn this approved roadmap into delegated implementation slices with QA and review."
+  short_description: "Manage complex builds with selective verification"
+  default_prompt: "Use $auto-manage to run this objective end to end with risk-tiered verification, bounded autonomy, and selective review."

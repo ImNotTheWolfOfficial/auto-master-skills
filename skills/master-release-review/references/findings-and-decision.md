@@ -5,7 +5,7 @@ Report location, format, severity, and decision rules.
 ## Report Path
 
 ```text
-~/.codex/artifacts/<project-slug>/release-review/<date>-master-release-review.md
+~/.auto-master/artifacts/<project-slug>/release-review/<date>-master-release-review.md
 ```
 
 ## Report Format

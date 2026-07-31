@@ -1,49 +1,51 @@
 ---
 name: auto-plan
-description: Use when the user asks for /autoplan, auto-plan, auto plan, $auto-plan, or wants a structured plan before execution.
+description: Create a structured, verification-ready implementation plan without executing it. Use when the user asks for /autoplan, auto-plan, a development roadmap, or a plan with bounded slices, mechanical acceptance criteria, security boundaries, rollback, risk-tiered QA, and regression controls.
 ---
 
 # Auto Plan
 
-Create a plan artifact only. Do not implement, deploy, spend money, change accounts, or make irreversible changes unless the user separately asks to execute.
+Create a plan artifact only. Do not implement, deploy, spend, change accounts, or perform irreversible work unless the user separately asks to execute.
 
-## Required Output
+## Artifact
 
-Write the plan to a `.md` file before presenting it. Store future plan artifacts outside project repositories in `~/.codex/artifacts` to avoid bloating repo docs with temporary planning files. Create the folder first when needed:
+Write the plan to a `.md` file under `~/.auto-master/artifacts/<project>/`, using a source-labeled subfolder when useful. Write into a repo plan folder only when the user explicitly requests a repo-owned plan. Name artifacts by product, topic, and date; never by model/provider.
 
-```powershell
-$artifactRoot = Join-Path $HOME '.codex/artifacts'
-New-Item -ItemType Directory -Force -Path $artifactRoot | Out-Null
-```
+## Planning Loop
 
-Use source-labeled subfolders when useful, such as `~/.codex/artifacts/project-a/...` or `~/.codex/artifacts/project-b/...`, but do not write auto-plan artifacts into repo `docs/plans/` folders unless the user explicitly asks for a repo-owned plan. Name artifacts by product + topic + date; never name files or their content after AI models or providers. Final chat links to the file and gives only the readiness summary.
+1. Capture objective, scope, constraints, roadmap context, source evidence, assumptions, blockers, and authority boundaries.
+2. Split execution into the smallest useful ordered slices. Classify each as **Micro**, **Small**, or **Full** using `auto-manage`'s verification kernel; escalate uncertain slices.
+3. For every slice define owned surfaces, explicit do-not-touch boundaries, dependencies, rollback/stop gate, and mechanically checkable acceptance criteria.
+4. For behavior-changing code, plan a test or reproducible check that is expected to fail before implementation (**RED**) and pass afterward (**GREEN**). For docs/copy/non-behavioral config, plan a deterministic before/after check without manufacturing RED.
+5. Separate subjective judgment (visual quality, tone, taste, product fit) from mechanical acceptance. Give it a named human/model judgment gate; never make it a hard mechanical verifier criterion.
+6. Define a `BASELINE_BLOCK`, required `EXECUTION_RECEIPT` fields, and the final `REGRESSION_DELTA` for each slice.
+7. Cover security across trust boundaries, auth/authz, secrets, privacy, abuse/rate limits, data/migrations, deployment, observability, rollback, and launch gates where relevant.
+8. Self-review once, score 1-10, and repair concrete gaps. Allow at most two self-review repair passes.
+9. Trigger one fresh-context independent review only for Full-tier security/auth/privacy, data/migration, execution/sandbox, shared-contract, release, broad-refactor, or similarly high-blast-radius plans. Skip it for Micro work and ordinary Small work; record the reason and residual risk.
+10. Evaluate review findings against evidence, repair valid gaps once, and finalize the readiness call.
 
-## Lean Planning Loop
+## Verification Contract
 
-1. Capture objective, scope, constraints, roadmap context, evidence, assumptions, and blockers.
-2. Draft phases, steps, verification gates, risks, decision points, and rollback/stop gates.
-3. For non-trivial product work, cover security as a cross-cutting section: trust boundaries, exposed surfaces, auth/authz, secrets, privacy, abuse/rate limits, deployment, observability, rollback, and launch gates.
-4. Self-review once; score 1-10; record the initial score and concrete gaps.
-5. Repair valid gaps. Run at most two self-review repair passes, and stop earlier when remaining gaps need user decisions or unavailable evidence.
-6. Independent review is the default for non-trivial plans: prefer an existing reviewer/sub-agent/thread for the same repo/objective and send only the delta plus sanitized context; spawn a fresh reviewer only when none is reusable. Ask for a 1-10 score and concrete gaps in one batched prompt. Skip review only for trivial/low-risk plans or an explicit user budget preference, and record why.
-7. Evaluate reviewer feedback; fix valid, grounded gaps. Reject or defer speculative, duplicate, blocked, stale, or out-of-scope feedback. Re-submit to the same reviewer at most once, and only when repairs changed the plan's shape.
-8. Update the artifact with final self-score, reviewer score if used, changes made, rejected/deferred feedback, and blockers.
+Each acceptance criterion must specify a file/state/observable outcome or a command with an expected exit/result. Examples: file exists, schema contains a field, request returns a status, N elements render, command exits 0. Put subjective criteria in a separate judgment table.
+
+Each planned receipt must capture exact command or manual flow, timestamp, exit/pass/fail/blocked result, concise relevant evidence, and material environment/profile. Each regression delta compares baseline failures or metrics with the final state and names every new failure.
 
 ## Review Economy
 
-- Do not spawn reviewers during self-review loops.
-- Reuse the same reviewer for revisions when tooling exposes a reusable handle or thread.
-- Batch reviewer questions; one concise review prompt beats several small prompts.
-- If no independent review is used, record why: unavailable, low risk, no reusable reviewer, or user budget preference.
-- Redact secrets, tokens, cookies, private keys, signed URLs, unrelated private info, and unnecessary local identity details before any review.
+- Do not spawn reviewers during self-review.
+- Reuse a reviewer only when repo and objective match; otherwise use at most one fresh-context reviewer at a qualifying risk boundary.
+- Batch the contract, sanitized evidence, and questions. Never send secrets or unrelated private context.
+- If independent review is unavailable or intentionally skipped, state why; do not imply it occurred.
 
-## Plan Sections
+## Required Sections
 
-- Objective and assumptions
-- Execution plan
-- Security and launch gates
-- Verification plan
+- Objective, authority, assumptions, and evidence
+- Ordered slices with tier, ownership, dependencies, and do-not-touch boundaries
+- Mechanical acceptance criteria and separate judgment gates
+- Baseline, RED/GREEN or deterministic proof, receipt, and regression-delta plan
+- Security, rollback, and launch gates
+- Circuit-breaker and checkpoint strategy
 - Initial self-score and repairs
-- Independent review: reused/spawned/skipped, score, accepted changes
-- Rejected or deferred feedback
-- Remaining blockers
+- Independent review status, score/findings when used, accepted changes
+- Rejected/deferred feedback and blockers
+- Readiness decision

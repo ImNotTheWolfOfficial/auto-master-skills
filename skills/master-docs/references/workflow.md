@@ -10,13 +10,13 @@ Full run procedure for a Master-Docs documentation sweep. Load this before start
 4. **Resolve artifact paths.** All output lives outside the repo:
 
    - Artifact root:
-     `~/.codex/artifacts/<project-slug>/`
+     `~/.auto-master/artifacts/<project-slug>/`
    - Internal docs:
-     `~/.codex/artifacts/<project-slug>/docs/internal/`
+     `~/.auto-master/artifacts/<project-slug>/docs/internal/`
    - Public docs:
-     `~/.codex/artifacts/<project-slug>/docs/public/`
+     `~/.auto-master/artifacts/<project-slug>/docs/public/`
    - Manifest:
-     `~/.codex/artifacts/<project-slug>/manifests/master-docs-manifest.json`
+     `~/.auto-master/artifacts/<project-slug>/manifests/master-docs-manifest.json`
 
    Create these directories if missing. Never write generated docs or manifests inside the repo.
 

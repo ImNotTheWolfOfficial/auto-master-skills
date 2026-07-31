@@ -1,48 +1,44 @@
 ---
 name: master-qa
-description: Run a full release-candidate QA gate for authorized local projects. Use when the user asks for Master-QA, master-qa, release QA, full app QA, pre-release testing, patch validation, installer validation, desktop app QA, web app QA, regression sweep, go/no-go report, or final quality gate before public release. Produces an evidence-backed GO / NO-GO report outside the repo.
+description: Run a full release-candidate QA gate for authorized local projects. Use for Master-QA, release QA, installer or desktop/web validation, regression sweeps, go/no-go decisions, or the final quality wall before public release. Requires baseline comparison, reproducible execution receipts, real frontend interaction, and an evidence-backed release decision.
 ---
 
 # Master-QA
 
-Use this skill to perform a release-candidate QA sweep for the current repo, app, feature, installer, or website. This is the final quality gate before a product or patch ships to the public — everyday change validation stays in `$auto-qa`; Master-QA is the final wall.
+Run the final release wall. Everyday slice validation belongs to `auto-qa`; this skill proves the integrated release artifact is ready.
 
 ## Core Rules
 
-- Treat this as a final quality gate, not a quick smoke test.
-- Prefer the Master-Docs manifest for surface coverage when available; fall back to repo-native discovery.
-- Reuse fresh, trustworthy `$auto-qa` per-slice evidence, then re-check changed areas — and always re-run release-critical happy paths and release-only gates regardless.
-- The Frontend Gate is non-negotiable on every user-facing surface: a skipped or blocked Frontend Gate means NO-GO, never pass.
-- Produce a GO / NO-GO / GO WITH KNOWN ISSUES decision.
-- Any Blocker means NO-GO. Any unresolved High means NO-GO unless the user explicitly accepts the risk.
-- Never mark a skipped or blocked required gate as passed.
-- Security sign-off: confirm Master Release Review ran for this release and its blockers are cleared — link its report, do not duplicate it.
-- Write QA reports outside the repo under `~/.codex/artifacts/<project-slug>/qa/`.
-- Do not publish releases, upload artifacts, spend provider credits, modify production state, or change release availability.
-- Never print secrets, tokens, private keys, certs, passwords, auth headers, cookies, signed URLs, or private environment values.
-- Never name generated files or doc content after AI models or providers.
-- Preserve unrelated user work.
+- Prefer the Master-Docs surface manifest when available; otherwise inventory repo-native surfaces.
+- Reuse fresh trustworthy `auto-qa` evidence for unchanged areas, but always rerun release-critical happy paths and release-only gates.
+- Capture the previous release/report as the baseline and state the `REGRESSION_DELTA` for failures, performance, size, and other measured signals.
+- Require an `EXECUTION_RECEIPT` for every claimed gate: exact command/flow, timestamp, exit/result, concise evidence, and material environment/profile.
+- Run the Frontend Gate on every user-facing surface. A skipped or blocked required Frontend Gate cannot produce GO.
+- Return GO, NO-GO, or GO WITH KNOWN ISSUES. Any Blocker is NO-GO; any unresolved High is NO-GO unless explicitly accepted.
+- Confirm `master-release-review` ran and its blockers are cleared; cite that report instead of duplicating it.
+- Write reports outside the repo under `~/.auto-master/artifacts/<project-slug>/qa/`.
+- Do not publish, upload, spend provider credits, mutate production, or change release availability.
+- Redact secrets and private values; report configuration as SET/MISSING only.
+- Preserve unrelated user work and never label skipped/blocked evidence as passed.
 
 ## Workflow
 
-1. Identify the active repo, project slug, release target, and QA scope.
-2. Load the Master-Docs manifest if available, otherwise build a local surface inventory.
-3. Review changed areas since the last QA report or release; collect reusable `$auto-qa` evidence.
-4. Build the QA matrix covering product surfaces, release artifacts, and critical journeys.
-5. Run deterministic repo-native checks first: tests, typecheck, lint, production build.
-6. Run user-journey checks appropriate to the app type — Frontend Gate on every user surface.
-7. Run release-only gates: install, upgrade, rollback, metadata, checksums, signing, offline behavior, performance vs baseline, accessibility.
-8. Capture evidence; record anything blocked or skipped honestly.
-9. Write the GO / NO-GO report outside the repo, including a customer-safe known-issues list.
-10. Summarize the decision and recommended next actions.
+1. Identify repo, project slug, release target, exact artifact/commit, environment, and scope.
+2. Load the surface manifest or build an inventory; review the prior release/report and changed areas.
+3. Capture the baseline, inherited failures, and reusable `auto-qa` evidence.
+4. Build a release matrix before long checks. Keep automated criteria mechanically decidable and separate subjective judgment.
+5. Run deterministic gates first: tests, typecheck, lint, production build, and artifact checks.
+6. Run production-like user journeys with the Frontend Gate and capture evidence per flow.
+7. Run relevant release-only gates: install/upgrade/rollback, metadata/checksums/signing, offline/degraded behavior, performance versus baseline, accessibility, and security sign-off.
+8. Record receipts as work runs; do not reconstruct evidence from memory.
+9. Calculate the regression delta and classify every new failure as release, inherited, environment, or blocked.
+10. Write the evidence-backed decision and customer-safe known issues.
 
 ## References
 
-Read these references as needed:
-
-- `references/workflow.md` for the full QA lifecycle.
-- `references/surface-inventory.md` for manifest use and fallback discovery.
-- `references/test-matrix.md` before constructing the QA matrix.
-- `references/release-gates.md` before checking release readiness.
-- `references/evidence-and-reporting.md` before writing the final QA report.
-- `references/desktop-and-web-checks.md` for desktop and web app verification patterns.
+- Read `references/workflow.md` before execution.
+- Read `references/surface-inventory.md` for discovery.
+- Read `references/test-matrix.md` before constructing the matrix.
+- Read `references/release-gates.md` before release checks.
+- Read `references/evidence-and-reporting.md` before reporting.
+- Read `references/desktop-and-web-checks.md` for native/web patterns.

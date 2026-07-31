@@ -1,69 +1,50 @@
 # Master-Refactor Workflow
 
-Full lifecycle for a Master-Refactor run. Load this before starting.
+Load this before starting.
 
 ## Modes
 
-- **Analysis-only (default).** Inspect the repo or feature, capture baselines, produce the candidate report, stop for user approval. Every run starts here.
-- **Approved implementation.** Only after the user picks candidates or a scope from the report. Isolate, implement slice by slice, verify, log.
+- **Analysis-only (default):** inspect, baseline, rank candidates, and stop for approval.
+- **Maintenance sweep:** inspect changed/logged debt, rank a bounded top set, and stop at the same approval gate. Never auto-delete or rewrite.
+- **Approved implementation:** only after the user selects candidates; isolate, implement, verify, and log.
 
-## 1. Startup Checks
+## 1. Startup
 
-1. Confirm the active repo and project root; derive `<project-slug>` (repo directory name, kebab-cased) unless the user specifies one or an existing artifact folder already uses one.
-2. Read project instructions (`AGENTS.md`, contributor docs) when present.
-3. Check git branch and worktree status. Identify unrelated dirty files and preserve them — inspect before touching, and avoid them unless the approved scope requires it.
-4. **Read the refactor log** at `~/.codex/artifacts/<project-slug>/refactor/refactor-log.md` (see `refactor-log.md`). Past outcomes shape this run: skip candidates already completed, do not re-propose rejected candidates without new evidence, and honor recorded gotchas and do-not-retry notes.
-5. Detect scope: repo-wide or feature-scoped (whatever is currently under discussion).
+1. Confirm repo/root, branch, worktree, slug, scope, and unrelated dirty files.
+2. Read project instructions and `~/.auto-master/artifacts/<project-slug>/refactor/refactor-log.md`.
+3. Skip completed candidates and do not re-propose rejected ones without new evidence.
+4. Reuse the Master-Docs graph/manifest when available.
 
-## 2. Context Discovery (research phase)
+## 2. Research
 
-Run `$auto-research` for non-trivial scope — or an inline equivalent when the target is small enough that full skill overhead is waste. Map:
+Use `auto-research` for nontrivial scope or a lean inline map for small scope. Trace architecture, dependents, hot paths, test coverage, recent history, repo-native gates, and local conventions.
 
-- architecture, module boundaries, dependents, and hot paths — reuse the Master-Docs graph/manifest at `~/.codex/artifacts/<project-slug>/manifests/master-docs-manifest.json` when present instead of re-deriving the graph
-- package manifests and the project's test, build, lint, and typecheck commands
-- test coverage over the target area (what protects it, what doesn't)
-- recent git history; for periodic runs, diff since the last logged run so discovery focuses on what actually changed
-- existing conventions and local helper APIs — prefer them over inventing new abstractions
+## 3. Baseline
 
-## 3. Baselines
+Record commit/branch/dirty state, metrics, current gate results, and UI screenshots for visible surfaces. This is the reference for every after-result.
 
-Capture the "before" evidence per `baselines-and-metrics.md`: metrics, a baseline git snapshot, and UI screenshots for frontend-visible areas.
+## 4. Candidates
 
-## 4. Candidate Discovery
+Look for duplication, unused code/dependencies, complexity, inconsistent patterns, repeated expensive work, unclear boundaries, stale scaffolding, safe simplifications, and test gaps. Rank value, risk, confidence, blast radius, coverage, and effort as recommended/optional/not recommended.
 
-Look for:
+## 5. Approval Gate
 
-- duplicated logic
-- unused code
-- unused dependencies
-- overly complex modules
-- inconsistent local patterns
-- expensive repeated work
-- unclear boundaries
-- stale feature scaffolding
-- low-risk simplifications
-- test gaps that block safe refactoring
+Write the candidate report and stop. Do not plan or edit until the user selects scope. Log an analysis-only run even when nothing is approved.
 
-## 5. Ranking
+## 6. Approved Implementation
 
-Rank each candidate by expected value, risk, confidence, blast radius, test coverage, and estimated effort, and give each a verdict: **recommended / optional / not recommended**.
+1. Plan the selected set with `auto-plan`; classify each slice Micro/Small/Full.
+2. Create an owned isolated branch/worktree; never implement on main/master.
+3. Add characterization tests for weak coverage and prove they pass before moving code.
+4. Execute one bounded slice at a time with `auto-pilot`; capture receipts as gates run.
+5. Keep observable behavior unchanged. Eject required behavior changes into a separately approved Auto plan with RED -> GREEN evidence.
+6. Run `auto-qa` per slice and across the final set; UI-visible work requires the Frontend Gate.
+7. Calculate regression deltas against baseline metrics/failures.
+8. Merge only after the entire selected set is complete, clean, and explicitly approved.
+9. Append results and negative findings to the log.
 
-## 6. Approval Gate (after research, before planning)
+Honor `auto-pilot`'s circuit breaker: after the same failure twice, diagnose or shrink the slice; never exceed five implementation/fix attempts without checkpointing as blocked.
 
-Stop. Write and present the candidate report per `candidate-report.md`. No `$auto-plan`, no code changes, until the user picks candidates or a scope. If the user declines everything, log the run (candidates reviewed and verdicts) and end — that record still saves the next run time.
+## Final Report
 
-## 7. Approved Implementation
-
-1. **Plan** the approved set with `$auto-plan`, or a lean inline plan when a single small candidate makes full skill overhead waste.
-2. **Isolate** per `isolation-and-qa.md`: branch or git worktree `refactor/<date>-<topic>`; never work on main/master.
-3. **Characterization tests first** for approved targets with weak coverage — slice #1 pins current behavior before anything moves.
-4. **Execute** with `$auto-pilot`: one bounded slice at a time, narrow diffs, behavior preserved. If a behavior change turns out to be necessary, stop and eject it as a separate proposal for the user.
-5. **Verify** per slice with `$auto-qa` at risk-matched depth — the Frontend Gate is mandatory for UI-visible slices — plus a full pass over the complete set at the end. Compare after-metrics against the baselines.
-6. **Merge** to main/master only when the full approved set is complete, QA-clean, and the user explicitly approves the merge.
-7. **Log** the run per `refactor-log.md`, including negative findings.
-
-For multi-phase refactors spanning many slices, `$auto-manage` acts as manager: it owns the slice queue, delegation to workers, review discipline, and integration judgment.
-
-## 8. Final Report
-
-Report outcomes, the before/after metrics table, files changed, QA evidence, what was deferred or rejected and why, and follow-up recommendations for the next periodic run.
+Report selected scope, before/after metrics, regression delta, receipts, changed files, QA, review, checkpoint/merge status, and only deferred/rejected items already recorded in the approved scope or log.

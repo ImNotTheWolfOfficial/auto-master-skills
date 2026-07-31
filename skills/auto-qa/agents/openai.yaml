@@ -1,4 +1,4 @@
 interface:
-  display_name: "Auto QA"
-  short_description: "Risk-matched QA with real frontend verification"
-  default_prompt: "Use $auto-qa to validate this change with focused deterministic checks and real frontend verification when the UI is affected."
+  display_name: "Auto-QA"
+  short_description: "Run risk-tiered, receipt-backed QA gates"
+  default_prompt: "Use $auto-qa to verify this change against a baseline with reproducible receipts and real frontend checks when applicable."

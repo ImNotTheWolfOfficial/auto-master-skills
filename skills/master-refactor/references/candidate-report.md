@@ -1,6 +1,6 @@
 # Candidate Report Format
 
-The pre-implementation report is mandatory: it is written and presented **after research, before planning**, and no code changes happen until the user responds to it. Save it to `~/.codex/artifacts/<project-slug>/refactor/candidate-report-<date>.md` and summarize it in chat.
+The pre-implementation report is mandatory: it is written and presented **after research, before planning**, and no code changes happen until the user responds to it. Save it to `~/.auto-master/artifacts/<project-slug>/refactor/candidate-report-<date>.md` and summarize it in chat.
 
 ## Structure
 

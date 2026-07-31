@@ -17,7 +17,7 @@ Full review lifecycle. Load this before starting.
 2. Read project instructions (`AGENTS.md`) if present.
 3. Check git branch and worktree status; identify unrelated user changes and preserve them.
 4. Identify the release target: version, installer, package, bundle, or deployment surface when available.
-5. Locate prior release-review reports under `~/.codex/artifacts/<project-slug>/release-review/` — previously accepted risks and fixed findings inform this run.
+5. Locate prior release-review reports under `~/.auto-master/artifacts/<project-slug>/release-review/` — previously accepted risks and fixed findings inform this run.
 
 ## 2. Surface Discovery
 

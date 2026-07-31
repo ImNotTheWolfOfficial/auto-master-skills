@@ -1,4 +1,4 @@
 interface:
   display_name: "Master Optimize"
-  short_description: "Resource-efficiency audit with reviewed findings"
-  default_prompt: "Use $master-optimize to audit this repo or feature for resource strain, review the findings, and present a corrected report."
+  short_description: "Audit resource efficiency with selective review"
+  default_prompt: "Use $master-optimize to audit this scope for resource waste with measurement receipts and risk-triggered independent review."

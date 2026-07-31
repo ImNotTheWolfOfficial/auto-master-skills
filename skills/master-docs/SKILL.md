@@ -10,7 +10,7 @@ Use this skill to generate or refresh documentation for the current repo or feat
 ## Core Rules
 
 - Write all generated docs outside the repo.
-- Use `~/.codex/artifacts/<project-slug>/` as the artifact root.
+- Use `~/.auto-master/artifacts/<project-slug>/` as the artifact root.
 - Create both internal technical docs and public-safe customer docs.
 - Never put source code, file paths, private architecture details, private codenames, private identifiers, secrets, certs, tokens, or local identity details into public docs.
 - Generate public docs from sanitized internal docs, not directly from source.

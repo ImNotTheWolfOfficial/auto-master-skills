@@ -1,4 +1,4 @@
 interface:
   display_name: "Auto Plan"
-  short_description: "Lean plans with scored review"
-  default_prompt: "Use $auto-plan to draft a plan, self-review it, reuse a reviewer only when needed, and report readiness."
+  short_description: "Build verification-ready execution plans"
+  default_prompt: "Use $auto-plan to create a risk-tiered plan with mechanical acceptance criteria, rollback, and verification evidence."

@@ -1,6 +1,6 @@
 # Auto Copy QA Gates
 
-Use these after `$auto-qa` selects the normal target repo checks. Per-slice QA proves each behavior as it lands; the final review runs the full set below over the complete adaptation.
+Use these after `auto-qa` selects the normal target repo checks. Per-slice QA proves each behavior as it lands; the final review runs the full set below over the complete adaptation.
 
 ## Required Extra Gates
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Auto Reflect"
+  short_description: "Turn confirmed failures into recurrence guards"
+  default_prompt: "Use $auto-reflect to record this confirmed failure and add the smallest durable recurrence guard."

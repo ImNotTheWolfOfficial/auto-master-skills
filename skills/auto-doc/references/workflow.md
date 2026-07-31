@@ -1,6 +1,6 @@
 # Auto Doc Workflow Reference
 
-Use this reference when executing `$auto-doc`. The skill is corpus-only: incomplete or single-batch runs are invalid.
+Use this reference when executing `auto-doc`. The skill is corpus-only: incomplete or single-batch runs are invalid.
 
 ## Table Of Contents
 
