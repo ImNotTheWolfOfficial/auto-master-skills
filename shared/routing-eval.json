@@ -1,0 +1,77 @@
+[
+  {
+    "id": "fork",
+    "request": "Fork this repo.",
+    "skills": [],
+    "boundary": "No source adaptation or external action."
+  },
+  {
+    "id": "correction",
+    "request": "Actually, correct the filename to guide.md.",
+    "skills": [],
+    "boundary": "Only the requested local correction."
+  },
+  {
+    "id": "feature",
+    "request": "Document one support feature for our assistant.",
+    "skills": [
+      "master-docs"
+    ],
+    "boundary": "Only the requested feature, with no whole-project corpus."
+  },
+  {
+    "id": "roadmap",
+    "request": "Finish the already-approved roadmap in ROADMAP.md.",
+    "skills": [
+      "auto-pilot"
+    ],
+    "boundary": "Execute the approved local slice only."
+  },
+  {
+    "id": "port",
+    "request": "Rebuild that Python tool in Rust inside this target app.",
+    "skills": [
+      "auto-copy"
+    ],
+    "boundary": "Review and plan only. Stop before implementation approval.",
+    "allowed": [
+      "auto-plan"
+    ]
+  },
+  {
+    "id": "explicit-corpus",
+    "request": "$auto-doc Build a whole-project corpus and assistant ingest.",
+    "skills": [
+      "auto-doc"
+    ],
+    "boundary": "Use the external working corpus and validated public export gate."
+  },
+  {
+    "id": "research",
+    "request": "Plan how to investigate this feature before implementing it.",
+    "skills": [
+      "auto-research"
+    ],
+    "boundary": "Propose research scope and await approval before research execution."
+  },
+  {
+    "id": "polish",
+    "request": "Polish the wording in the attached paragraph.",
+    "skills": [],
+    "boundary": "No independent review loop."
+  },
+  {
+    "id": "loop",
+    "request": "Loop until the reviewer says WOW on the attached report.",
+    "skills": [
+      "wow-loop"
+    ],
+    "boundary": "One maker and bounded independent review. No substituted self-verdict."
+  },
+  {
+    "id": "investigate",
+    "request": "Investigate why order A101 shows a pending refund.",
+    "skills": [],
+    "boundary": "Explain the recorded refund status from the fixture. Leave files unchanged."
+  }
+]

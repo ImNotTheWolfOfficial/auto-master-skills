@@ -18,6 +18,8 @@ Decision: GO / NO-GO / GO WITH KNOWN RISKS / BLOCKED
 Release target: <version/artifact/surface>
 Scope: <full product / desktop / web / installer / patch / feature>
 Commit: <sha>
+Artifact digest or immutable build ID: <identity of tested output>
+Configuration and environment: <sanitized identifiers>
 
 ## Summary
 
@@ -47,7 +49,7 @@ Commit: <sha>
 
 ## Retest Status
 
-<for re-reviews: each previously fixed Blocker/High and its retest result;
+<for re-reviews: each unresolved required row, the candidate digest, and each fixed Blocker/High retest;
 "first review — none" otherwise>
 
 ## Not Reviewed / Blocked
@@ -71,8 +73,10 @@ Each Blocker/High finding records: the finding, where it lives, a concrete failu
 
 ## Decision Rules
 
+Use the first applicable outcome in this order: NO-GO, BLOCKED, GO WITH KNOWN RISKS, GO.
+
 - Any Blocker → **NO-GO**.
-- Any unresolved High → **NO-GO**, unless the user explicitly accepts the risk (record who and when).
+- Any unresolved High means **NO-GO** if it affects a required security gate or lacks explicit user acceptance. For another High, record who accepted, when and the disclosure text. Return **GO WITH KNOWN RISKS** only if every required check passes and no Blocker remains.
 - Medium/Low only → **GO WITH KNOWN RISKS**, each documented.
 - Missing required artifacts or credentials → **BLOCKED** when they prevent a required check.
 - A required check that was blocked or skipped can never be counted as passed.

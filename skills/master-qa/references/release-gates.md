@@ -16,7 +16,7 @@ Checks that go beyond normal testing — they exist because "all tests pass" say
 - **performance vs baseline** — no regression beyond the agreed budget on measurable paths (use existing benchmarks or prior Master-QA report numbers)
 - **offline / degraded-network / provider-failure behavior** on critical paths when the app has any network dependency
 - **monitoring/alerting** wired for new surfaces when the project has observability
-- **security sign-off** — Master Release Review ran for this release and its Blocker/High findings are cleared; link its report rather than duplicating it. No release review on a public release is itself a finding.
+- **Security sign-off** requires an independent report identifying the candidate digest/build, revision and configuration. It covers applicable trust boundaries, privacy/data flows, dependencies, configuration and shipped artifacts. Record exclusions, unresolved findings and severity, and retest evidence for each fixed Blocker/High. Prefer Master Release Review. Equivalent reports must meet the same contract. Missing, mismatched or incomplete evidence blocks this required gate. Open Blocker/High findings in this required security gate prevent sign-off and require NO-GO even if accepted.
 
 ## Desktop Release Gates
 

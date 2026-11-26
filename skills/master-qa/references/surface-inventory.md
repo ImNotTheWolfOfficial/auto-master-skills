@@ -8,15 +8,11 @@ How Master-QA decides what to test. Coverage starts from a complete surface map 
 ~/.auto-master/artifacts/<project-slug>/manifests/master-docs-manifest.json
 ```
 
-When the manifest exists:
+Compare the manifest's repository/worktree identity, documented scope and revision with the release candidate. Read the internal index and inventory for documented surfaces. When Master-Docs is available, use its manifest summary and diff to locate changed areas without loading the hash index. Treat unknown, feature-only or stale coverage as partial.
 
-- Use it to identify documented modules, user-facing surfaces, public docs, feature boundaries, and changed sections — it is a guaranteed-complete map built by Master-Docs' full sweep.
-- Use its source hashes and section map to focus QA on areas changed since the docs run.
-- Still include release-critical happy paths even when unchanged — release gates re-verify the core regardless.
+## Candidate discovery
 
-## Fallback Discovery (no manifest)
-
-Build the inventory from repo-native signals:
+Inspect the actual candidate and packaging inputs even with a current manifest. Reconcile uncovered surfaces, especially installers and updates, against the release inventory. Keep release-critical journeys in scope even when unchanged. Check these sources as applicable:
 
 - package manifests and workspace manifests
 - app entry points

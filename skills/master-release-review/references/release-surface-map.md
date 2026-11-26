@@ -8,13 +8,11 @@ How the skill decides what to review and how deeply. Depth follows trust boundar
 ~/.auto-master/artifacts/<project-slug>/manifests/master-docs-manifest.json
 ```
 
-When the manifest exists:
+Compare the manifest's repository/worktree identity, documented scope and revision with the release candidate. Read the internal index and inventory for documented surfaces. When Master-Docs is available, use its manifest summary and diff to locate changed areas without loading the hash index. Treat unknown, feature-only or stale coverage as partial.
 
-- Use it to identify product surfaces, user-facing flows, feature boundaries, and changed sections.
-- Use source hashes and section mappings to focus on changed areas.
-- Still include release-critical surfaces even if unchanged — trust review re-verifies the boundary regardless.
+## Candidate discovery
 
-## Fallback Discovery (no manifest)
+Inspect the actual candidate and packaging inputs even with a current manifest. Reconcile uncovered surfaces, especially installers and updates, against the release inventory. Keep release-critical journeys in scope even when unchanged. Check these sources as applicable:
 
 - package manifests and workspace manifests
 - app entry points

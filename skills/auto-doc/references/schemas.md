@@ -20,11 +20,12 @@ Use this reference before creating or validating artifacts.
 
 ## 1. Default Artifact Layout
 
-Default root:
+Use the external working root selected during preflight.
 
 ```text
 <artifact_root>/
   README.md
+  run-state.md
   source-map/
     README.md
     <batch-id>.source-map.md
@@ -50,7 +51,7 @@ Default root:
   run-report.md
 ```
 
-If the user wants temp artifacts, keep this shape under the temp root.
+The run state carries the source inspection receipt, project profile, current batch stage and resume instruction defined in the skill body. Store exactly one `ingest_enabled: true` or `ingest_enabled: false` line in the whole-project profile. For an ingest-disabled corpus, omit both ingest files or leave them empty.
 
 ## 2. Whole-Project Source Map README
 
@@ -69,6 +70,8 @@ Top-level area table:
 | Area | Purpose | Representative files | Candidate features | Tests/docs present | Batch | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 
+The Area column contains the top-level file or directory name from discovery. For a sensitive name, use the corresponding `sha256:<digest>` from the inspection receipt. Assign each row to one batch, or use `out-of-scope` in Batch with a reason in Notes. Repeat an area row when several batches cover it.
+
 ## 3. Batch Source Map
 
 Required sections:
@@ -80,6 +83,8 @@ Required sections:
 - `## Existing Docs Map`
 - `## Tests Map`
 - `## Gaps`
+
+Include one `PUBLIC_PAGES=slug-a slug-b` line. Enter every owned or shared page, matching the page's `source_batches` list. An empty value means this batch contributes no public pages.
 
 Feature map columns:
 
@@ -204,6 +209,8 @@ One JSON object per line:
 
 Required keys: `chunk_id`, `doc_slug`, `section_id`, `title`, `feature_area`, `verified`, `answerable`, `text`, `source_files`, `do_not_claim`, `needs_verification`.
 
+Chunk IDs and prompt IDs are nonempty and unique within each row type across the corpus. For a shared page, assign each section to one batch for ingest and keep its prompts with that chunk. Use only the two declared ingest filenames per batch.
+
 Answerable chunks must have `verified: true`, `answerable: true`, and empty `needs_verification`.
 
 ## 11. Cache Prompts JSONL
@@ -219,6 +226,8 @@ Required keys: `prompt_id`, `question`, `expected_doc_slug`, `expected_section_i
 ## 12. Batch Audit Status Markers
 
 Completed batch audits must include machine-readable status lines so the validator can enforce readiness without printing sensitive content.
+
+Use each marker exactly once, on its own line with its final value.
 
 Public-safety audit:
 
@@ -251,6 +260,7 @@ Required final report sections:
 - `CORPUS_SCOPE=FULL_PROJECT`
 - `BATCHES_TOTAL=<n>`
 - `BATCHES_COMPLETE=<n>`
+- `SOURCE_COMMIT=<sha>` (the commit the corpus was built from; a refresh run diffs against it)
 - `## Scope`
 - `## Artifact Root`
 - `## Batches Completed`
@@ -262,3 +272,5 @@ Required final report sections:
 - `## Comparison To Existing Docs` when requested; must state `scope-match`, `scope-mismatch`, or `not-compared`
 - `## Assistant Readiness`
 - `## Remaining Gaps`
+
+Include the cross-batch coverage audit under `## Batches Completed` in this report. Use one row per batch with columns `Batch | Coverage audit | Cross-batch findings`. Enter the exact batch ID, its plain relative `audits/<batch-id>.coverage-audit.md` path and the result of checking the batch against the whole-project map and its consumers. Include gaps or private-only decisions where applicable. Give each required report section its actual findings.

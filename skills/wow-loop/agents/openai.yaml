@@ -1,0 +1,4 @@
+interface:
+  display_name: "WOW Loop"
+  short_description: "Improve a deliverable through independent review"
+  default_prompt: "Use $wow-loop to improve this deliverable against my criteria through independent review."

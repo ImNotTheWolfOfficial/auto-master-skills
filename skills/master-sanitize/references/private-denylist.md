@@ -41,7 +41,7 @@ The denylist may contain:
 }
 ```
 
-Treat the schema as flexible: if the file shape differs, read conservatively and do not fail unless parsing is impossible.
+A plain array of terms or arrays under `terms`, `domains`, or `paths` may be empty. Each entry supplies a literal or a named pattern. Unrecognized entries or invalid lists make the check incomplete.
 
 ## Rules
 
@@ -50,7 +50,7 @@ Treat the schema as flexible: if the file shape differs, read conservatively and
 - Never copy the denylist (or any part of it) into a repo, a commit, or a public doc.
 - Never print the full denylist — not in chat, not in reports.
 - Findings identify the **category** or a masked term, not the confidential contents; avoid echoing the term itself where the file/line reference already locates it.
-- If the denylist is missing, continue with built-in generic checks and report `private denylist: MISSING`.
+- An unreadable configured policy blocks sign-off until repaired. If the optional denylist is missing, continue with built-in generic checks and report `private denylist: MISSING`.
 
 ## Maintenance Loop
 

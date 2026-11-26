@@ -59,3 +59,17 @@ Status: DRAFT (independent review blocked) | FINAL (self-verified) | FINAL (inde
 - Separate measured evidence from estimates/hypotheses.
 - Coverage and Verification And Review are mandatory. If required review is blocked, the report remains a draft.
 - Internal paths are acceptable; secrets are not.
+
+## Optimize Log
+
+`~/.auto-master/artifacts/<project-slug>/optimize/optimize-log.md` is the compact memory that makes the next audit cheaper. Keep a summary table at the top and append one entry per run, newest last:
+
+```markdown
+| Date | Mode | Findings H/M/L | Review mode | Outcome | Notes |
+|---|---|---|---|---|---|
+| 2026-01-01 | full | 2/3/4 | independently reviewed | presented | top: example listener leak |
+```
+
+Each entry records the date, mode/scope, branch/commit, findings and verdicts, checked-clean areas, dismissed findings with reasons, links to measurement receipts, the delta against the prior baseline, review mode and outcome, user disposition, and in-scope follow-up. Link to the report instead of repeating it.
+
+Log clean runs too: their checked-clean coverage lets the next audit skip unchanged areas. Never include secrets or raw private values.

@@ -20,10 +20,9 @@ What to look for and how to report it. For pre-push scope, apply the same checks
 ## Suggested Checks
 
 - Inspect `.gitignore`, `.gitattributes`, package manifests, release configs, CI workflows, docs folders, examples, fixtures, screenshots, test data, and public docs.
-- Fast text search for denylist terms (see `private-denylist.md`) and generic sensitive patterns.
-- File extension/path scans for sensitive file types.
-- Entropy/credential-shaped detection where available — high-entropy strings in config, code, or fixtures are findings even when no known pattern matches.
-- For pre-push scope: `git log`/diff of outgoing commits, and the tracked-file list of every ref being pushed.
+- The masked scanner (`scripts/scan-public-readiness.mjs`, see `SKILL.md`) does the pattern work: denylist terms, credential shapes, high-entropy strings, sensitive file types, local paths, and private addresses. Treat its `high-entropy-string` and `assigned-secret` hits as findings to check even when no known token format matches.
+- Do not repeat that pattern work with a search that prints matching lines. For anything the scanner cannot express, use masked locations or counts and request a privately checked redacted excerpt when needed.
+- For pre-push scope: run the scanner with `--ref` (or `--all-refs`) and `--outgoing <remote>`. The scanner stays offline and includes the full reachable history, historical filenames and annotated tag metadata. Review author identities and contextual wording through privately checked redacted excerpts. Mark unresolved coverage in the report.
 
 ## Reporting Rules
 

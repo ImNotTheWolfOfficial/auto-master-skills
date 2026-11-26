@@ -1,31 +1,27 @@
 # Auto Doc Workflow Reference
 
-Use this reference when executing `auto-doc`. The skill is corpus-only: incomplete or single-batch runs are invalid.
+Use this reference for discovery, source maps, deep dives, and public docs. Artifact formats are in `schemas.md`; audits, the reviewer pass, and the readiness gate are in `quality-gates.md`.
 
-## Table Of Contents
+## Contents
 
 1. Project profile
 2. Discovery protocol
 3. Whole-project source map
-4. Batch source map
-5. Private technical deep dives
-6. Public-facing behavior docs
-7. Public/private separation
+4. Batch design
+5. Batch source map
+6. Private technical deep dives
+7. Public behavior docs
 8. Assistant ingest output
-9. Corpus batch order design
-10. Batch order design
-11. Reviewer pass
-12. Final readiness gate
 
 ## 1. Project Profile
 
-Create a profile before writing docs. Record it in the source map README or run report.
+Record the profile in the source map README and in `run-state.md`.
 
 ```yaml
 project_name: <human readable>
 project_slug: <lowercase slug>
 repo_root: <repo-relative or safe root label>
-artifact_root: docs/auto-doc
+artifact_root: <default ~/.auto-master/artifacts/<project-slug>/auto-doc/>
 public_audience: <who may read public docs>
 private_audience: <who may read technical docs>
 assistant_name: assistant
@@ -41,94 +37,66 @@ batch_order:
     feature_areas: [<area>]
 ```
 
-Project neutrality rule: derive names, providers, frameworks, and feature areas from the repo. Do not inherit names from previous projects.
+Project neutrality rule: derive names, providers, frameworks, and feature areas from the repo. Do not inherit them from previous projects.
 
 ## 2. Discovery Protocol
 
-Run discovery from the project root before writing a batch. Use repo-relative output in artifacts.
+Run discovery from the project root before writing a batch. Discovery output is file names and match counts only. A broad keyword search that prints every matching line can fill the context with thousands of lines; never run one. Use repo-relative output in artifacts.
 
-Required baseline commands:
+Baseline commands (adapt the tool; the output shape is the rule):
 
 ```bash
 rg --files
-rg -n "command|invoke|emit|listen|route|router|provider|model|memory|embedding|license|auth|settings|workspace|worktree|mcp|plugin|skill|error|rate|limit"
-rg -n "describe\(|it\(|test\(|expect\(" .
+rg -c "command|invoke|emit|listen|route|router|provider|adapter|memory|storage|license|auth|settings|workspace|plugin|rate.?limit"
+rg -l "describe\(|it\(|test\(|expect\(|#\[test\]|def test_|func Test"
 ```
 
-If the project is not TypeScript/Rust/Tauri/provider-oriented, adapt the keyword search to project-specific concepts and record the replacement.
+- `rg --files` respects ignore rules. When the list is long, redirect it to a file in the artifact root and read it in parts.
+- The keyword list is a starting point. Replace it with the project's own concepts and record the replacement.
+- After the counts identify the relevant files, read those files in targeted ranges.
 
-Also inspect, when present:
+Also inspect, when present: package and workspace manifests, app entry points, server/API routes, UI routes and component entry points, command registrations, shared exports, database schema and migrations, storage modules, provider/adapter registries, settings and default config, auth/licensing modules, tests and fixtures, existing docs (which may be stale), and CI, security, and release scripts.
 
-- package/workspace manifests
-- app entrypoints
-- server/API routes
-- UI route and component entrypoints
-- command registrations
-- shared exports
-- database schema and migrations
-- storage modules
-- provider/adapter registries
-- settings/default config definitions
-- auth/licensing modules
-- tests, fixtures, mocks, and snapshots
-- existing docs that may be stale or incomplete
-- CI/security/release scripts
-
-Each batch source map must include a command log:
+Each batch source map includes a command log:
 
 | cwd | command | result | surfaced files or reason |
 | --- | --- | --- | --- |
 | `<repo root>` | `<exact command>` | `<PASS/FAIL/REPLACED>` | `<safe summary>` |
 
-Do not include private absolute local paths in command logs.
+Do not put private absolute local paths in command logs.
 
 ## 3. Whole-Project Source Map
 
-Start with a thin source map that identifies every top-level source package/folder and assigns it to a batch.
-
-Columns:
-
-- Top-level area
-- Purpose
-- Representative files
-- Candidate feature areas
-- User-visible behavior
-- Tests/docs present
-- Batch assignment
-- Gaps / needs verification
+Start with a thin map that identifies every top-level source package or folder and assigns it to a batch. Columns are in `schemas.md`.
 
 Quality bar:
 
-- Every top-level source/docs/config/test area is represented or explicitly marked not relevant.
+- Every top-level source, docs, config, and test area is represented or explicitly marked not relevant.
 - Every obvious user-visible feature has at least one source file or a `Needs verification` gap.
-- Every existing doc page is mapped to one or more feature areas when docs exist.
+- Every existing doc page is mapped to one or more feature areas.
 - Tests that confirm important behavior are identified.
 
-Do not produce final public docs before this map exists.
+Do not write final public docs before this map exists.
 
-## 4. Batch Source Map
+## 4. Batch Design
 
-For each batch, deepen the source map with this table:
+A batch is a coherent feature slice, chosen from the features that discovery found. Do not force another project's batch order onto this one. Size a batch so that its source reading and its artifacts fit in one working session.
 
-- Feature area
-- User-visible feature
-- Source files
-- Commands/APIs/events involved
-- Data models/tables/config involved
-- User workflow
-- Failure/error states
-- Security/privacy implications
-- Current docs that mention it
-- Tests that prove it
-- Gaps / needs verification
+Common batch families: onboarding and first launch; auth, account, and licensing; providers, integrations, and external services; routing, orchestration, and task lifecycle; memory, storage, and search; workspace, files, and project context; UI and interaction flows; settings and configuration; security, privacy, and abuse controls; observability and QA; troubleshooting and limitations.
 
-List exact searches run and files surfaced. If a behavior is unclear, do not guess.
+A complete one-batch project is valid when the independent discovery inventory, assignments, audits and outputs cover every area. Multiple areas may share one batch. Record an explicit out-of-scope reason for each excluded area. Every batch has a public page, a private-only rationale, or a gap row for each user- or operator-visible feature in it. Do not compare an incomplete corpus with a complete existing docs set as if the scopes match.
 
-## 5. Private Technical Deep Dives
+## 5. Batch Source Map
 
-Private deep dives are internal/operator/engineering artifacts. They may include implementation structure, source maps, code-level flow, and test references, but never secrets or concrete private topology.
+For each batch, deepen the source map with the feature-map table in `schemas.md`: feature area, user-visible feature, source files, commands/APIs/events, data and config, user workflow, failure states, privacy/security implications, current docs, tests, gaps.
 
-Use this structure for each feature:
+List each public page slug the batch contributes to in its `PUBLIC_PAGES` inventory line, including pages shared with another batch. List the exact searches run and the files they surfaced. If a behavior is unclear, record a gap; do not guess.
+
+## 6. Private Technical Deep Dives
+
+Private deep dives are internal engineering artifacts. They may include implementation structure, code-level flow, and test references, but never secrets or concrete private topology.
+
+Use exactly this heading set for each feature (the validator checks it):
 
 ```markdown
 # Feature Name
@@ -152,7 +120,7 @@ Number the sequence from user action to final result.
 List settings, env vars, config files, defaults, and controls.
 
 ## Data Model
-Explain tables, fields, local storage, files, caches, embeddings, or persisted state.
+Explain tables, fields, local storage, files, caches, or persisted state.
 
 ## Edge Cases And Failure Modes
 Explain missing deps, auth failures, rate limits, unavailable services, corrupt state, invalid config, and stale data.
@@ -178,142 +146,30 @@ List specific unknowns. Do not guess.
 
 Depth bar:
 
-- Major features: usually 1,500-3,000 words unless the source genuinely implements less. If shorter, explain why.
-- Minor features: still include source evidence, behavior, runtime flow, failure modes, and gaps.
-- Major features: include 10-30 realistic user questions.
-- Every deep dive must cite tests or explicitly say `No direct test found`.
+- Depth follows what the source implements. A major feature usually needs 1,500-3,000 words to cover every heading from evidence. If one is shorter, say why in `## Gaps`. Never pad to reach a count: a heading with nothing behind it gets one line that says so.
+- Minor features still carry source evidence, behavior, runtime flow, failure modes, and gaps.
+- Major features list 10-30 realistic user questions.
+- Every deep dive cites tests or says `No direct test found`.
 
-## 6. Public-Facing Behavior Docs
+## 7. Public Behavior Docs
 
-Public docs are not marketing pages. They explain public-safe behavior with enough detail for real user questions.
+Public docs are not marketing pages. They explain public-safe behavior in enough detail for a technically curious reader or an assistant to answer real questions without guessing. Write each public page from the batch's deep dives; do not re-read source for it.
 
-Each page must include:
-
-- title and slug
-- YAML frontmatter
-- stable section IDs
-- summary
-- detailed explanation
-- common workflows
-- examples
-- limitations
-- troubleshooting
-- related pages
-- source evidence footer or section maps
-
-Required frontmatter:
-
-```yaml
----
-slug: <stable-doc-slug>
-title: <page title>
-feature_area: <area>
-public_safe: true
-source_batches:
-  - <batch-id>
-related_pages:
-  - <slug>
-canonical_terms:
-  - <term>
-aliases:
-  - <user-facing alias>
-last_source_review: <YYYY-MM-DD>
----
-```
+Each page includes the frontmatter and body sections defined in `schemas.md`: stable section IDs, summary, detailed behavior, common workflows, examples where useful, limitations, troubleshooting, related pages, section evidence, and assistant notes.
 
 Retrieval rules:
 
 - Use short headings that can stand alone in search results.
-- Keep each section focused on one concept or workflow.
-- Prefer one factual claim per paragraph where practical.
+- Keep each section on one concept or workflow, with one factual claim per paragraph where practical.
 - Include user synonyms and aliases naturally.
 - Put limitations near the behavior they qualify.
-- Add `Assistant should know:` bullets for verified facts.
-- Add `Assistant should not claim:` bullets for unknowns, private details, and limitations.
-- Do not include `Needs verification` in public docs.
+- Add `Assistant should know:` bullets for verified facts and `Assistant should not claim:` bullets for unknowns, private details, and limitations.
 
-## 7. Public/Private Separation
-
-Private technical docs may include internal control flow, file/function/module maps, command/event/API wiring, test coverage evidence, source evidence matrices, gap analysis, private reviewer findings, and safe operator-only notes.
-
-Public docs may include user-visible behavior, public-safe architecture summaries, safe configuration concepts, public troubleshooting, limitations, public privacy/security boundaries, and repo-relative source evidence footers.
-
-Public docs must not include secrets, private local paths, private topology, exploit instructions, operator-only recovery steps that increase abuse risk, unverified roadmap promises, unsupported legal/security/privacy/pricing claims, or private code snippets that expose attack surface beyond public-safe understanding.
+What may appear in public docs: user-visible behavior, public-safe architecture summaries, safe configuration concepts, troubleshooting, limitations, public privacy/security boundaries, and repo-relative evidence footers. The exclusion list is the Public-Safety Gate in `quality-gates.md`.
 
 ## 8. Assistant Ingest Output
 
-If ingest is enabled, create machine-readable public-safe JSONL.
+When ingest is enabled, write public-safe JSONL per `schemas.md`.
 
-Chunk rules:
-
-- Include only verified and answerable sections.
-- Do not include chunks with unresolved `Needs verification`.
-- Do not include private technical details.
-- Include source files as repo-relative evidence references.
-
-Cache prompt rules:
-
-- Create realistic user questions for verified public behavior.
-- Include expected doc and section ids.
-- Include `must_mention` and `must_not_claim` arrays.
-- Do not create cache prompts for unverified claims.
-
-Use the schemas in `references/schemas.md`.
-
-## 9. Corpus Batch Order Design
-
-A completed corpus must cover every top-level source/docs/config/test area assigned in the whole-project source map. Do not stop after one batch. Do not compare incomplete output against a complete existing docs corpus as if scopes match.
-
-Every batch must have public pages, private-only rationale, or gap rows for every user/operator-visible feature in that batch.
-
-## 10. Batch Order Design
-
-A batch is a coherent feature slice. Do not force another project's batch order onto the current project.
-
-Common batch families:
-
-- onboarding / first launch
-- auth / account / licensing
-- providers / integrations / external services
-- routing / orchestration / task lifecycle
-- memory / storage / search
-- workspace / files / project context
-- UI / interaction flows
-- settings / configuration
-- security / privacy / abuse controls
-- observability / evals / QA
-- troubleshooting / limitations
-- final coverage audit
-
-Choose project-specific batches from discovered features.
-
-## 11. Reviewer Pass
-
-After each batch, run a reviewer pass. Use a subagent when available and useful.
-
-Reviewer task:
-
-1. Compare source map, private deep dives, public docs, and ingest outputs.
-2. Identify claims without evidence.
-3. Identify source behavior missing from docs.
-4. Identify vague or generic wording.
-5. Identify questions the assistant would still hallucinate about.
-6. Identify private/security-sensitive details in public docs.
-7. Produce findings by severity: `P0` unsafe/false/leak, `P1` major gap/unsupported claim, `P2` unclear or weak, `P3` polish.
-
-Do not proceed until P0/P1 findings are fixed or explicitly blocked.
-
-## 12. Final Readiness Gate
-
-Before calling a pass complete, answer:
-
-1. Can the assistant explain the project without unsupported claims?
-2. Can it explain each major feature and failure state?
-3. Can it explain what stays local/private and what may leave the project/system?
-4. Can it troubleshoot common user/operator issues?
-5. Can it explain limitations without overpromising?
-6. Are all public claims tied to evidence?
-7. Are unknowns listed as gaps instead of guessed?
-8. Do validation and negative-search audits pass?
-
-If any answer is no, return missing sections and do not mark complete. A completed run report must include `CORPUS_MODE=PASS`, `CORPUS_SCOPE=FULL_PROJECT`, `BATCHES_TOTAL=<n>`, and `BATCHES_COMPLETE=<n>`.
+- Chunks: verified and answerable sections only; no unresolved `Needs verification`; no private technical detail; repo-relative evidence references.
+- Cache prompts: realistic user questions about verified public behavior, with the expected doc and section IDs and `must_mention` / `must_not_claim` arrays. None for unverified claims.

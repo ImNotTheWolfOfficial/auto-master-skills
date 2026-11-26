@@ -17,6 +17,8 @@ Decision: GO | NO-GO | GO WITH KNOWN ISSUES
 Release target: <version/artifact/deployment surface>
 Scope: <repo-wide/feature/installer/patch>
 Commit: <sha>
+Artifact digest or immutable build ID: <identity of tested output>
+Configuration and environment: <sanitized identifiers>
 
 ## Summary
 <plain-language decision and why>

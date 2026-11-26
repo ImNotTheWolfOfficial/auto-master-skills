@@ -1,51 +1,19 @@
 ---
 name: auto-plan
-description: Create a structured, verification-ready implementation plan without executing it. Use when the user asks for /autoplan, auto-plan, a development roadmap, or a plan with bounded slices, mechanical acceptance criteria, security boundaries, rollback, risk-tiered QA, and regression controls.
+description: Plan implementation slices before coding. Use for a development roadmap, a structured plan or when the user types /autoplan. For investigation questions and findings use auto-research.
 ---
 
 # Auto Plan
 
-Create a plan artifact only. Do not implement, deploy, spend, change accounts, or perform irreversible work unless the user separately asks to execute.
+Plan only. Coding, deployment, spending, account changes and irreversible work require separate authority. Save Markdown in `~/.auto-master/artifacts/<project>/`. Use a repo folder only on request. Name by product, topic and date, never model/provider. If home is read-only, keep the suffix privately under `<os-temp>/.auto-master/artifacts/` outside every repo and tell the user the path.
 
-## Artifact
+Before tiering, read `references/verification-kernel.md`. Skip the read only while the complete kernel rules are actually in context. Reload missing rules after reset.
 
-Write the plan to a `.md` file under `~/.auto-master/artifacts/<project>/`, using a source-labeled subfolder when useful. Write into a repo plan folder only when the user explicitly requests a repo-owned plan. Name artifacts by product, topic, and date; never by model/provider.
+## Build the plan
 
-## Planning Loop
-
-1. Capture objective, scope, constraints, roadmap context, source evidence, assumptions, blockers, and authority boundaries.
-2. Split execution into the smallest useful ordered slices. Classify each as **Micro**, **Small**, or **Full** using `auto-manage`'s verification kernel; escalate uncertain slices.
-3. For every slice define owned surfaces, explicit do-not-touch boundaries, dependencies, rollback/stop gate, and mechanically checkable acceptance criteria.
-4. For behavior-changing code, plan a test or reproducible check that is expected to fail before implementation (**RED**) and pass afterward (**GREEN**). For docs/copy/non-behavioral config, plan a deterministic before/after check without manufacturing RED.
-5. Separate subjective judgment (visual quality, tone, taste, product fit) from mechanical acceptance. Give it a named human/model judgment gate; never make it a hard mechanical verifier criterion.
-6. Define a `BASELINE_BLOCK`, required `EXECUTION_RECEIPT` fields, and the final `REGRESSION_DELTA` for each slice.
-7. Cover security across trust boundaries, auth/authz, secrets, privacy, abuse/rate limits, data/migrations, deployment, observability, rollback, and launch gates where relevant.
-8. Self-review once, score 1-10, and repair concrete gaps. Allow at most two self-review repair passes.
-9. Trigger one fresh-context independent review only for Full-tier security/auth/privacy, data/migration, execution/sandbox, shared-contract, release, broad-refactor, or similarly high-blast-radius plans. Skip it for Micro work and ordinary Small work; record the reason and residual risk.
-10. Evaluate review findings against evidence, repair valid gaps once, and finalize the readiness call.
-
-## Verification Contract
-
-Each acceptance criterion must specify a file/state/observable outcome or a command with an expected exit/result. Examples: file exists, schema contains a field, request returns a status, N elements render, command exits 0. Put subjective criteria in a separate judgment table.
-
-Each planned receipt must capture exact command or manual flow, timestamp, exit/pass/fail/blocked result, concise relevant evidence, and material environment/profile. Each regression delta compares baseline failures or metrics with the final state and names every new failure.
-
-## Review Economy
-
-- Do not spawn reviewers during self-review.
-- Reuse a reviewer only when repo and objective match; otherwise use at most one fresh-context reviewer at a qualifying risk boundary.
-- Batch the contract, sanitized evidence, and questions. Never send secrets or unrelated private context.
-- If independent review is unavailable or intentionally skipped, state why; do not imply it occurred.
-
-## Required Sections
-
-- Objective, authority, assumptions, and evidence
-- Ordered slices with tier, ownership, dependencies, and do-not-touch boundaries
-- Mechanical acceptance criteria and separate judgment gates
-- Baseline, RED/GREEN or deterministic proof, receipt, and regression-delta plan
-- Security, rollback, and launch gates
-- Circuit-breaker and checkpoint strategy
-- Initial self-score and repairs
-- Independent review status, score/findings when used, accepted changes
-- Rejected/deferred feedback and blockers
-- Readiness decision
+1. State objective, scope, authority, constraints, evidence, assumptions and blockers. Reuse research. Size by risk and slice count. Mark empty required sections `n/a`.
+2. Order the smallest useful slices by dependency. Give each a tier, owner, affected surfaces, do-not-touch boundaries, acceptance criteria and rollback/stop gate.
+3. Specify the smallest sufficient set of checks with expected outcomes. A UI slice can need both a state assertion and a keyboard or persistence check. Plan RED -> GREEN for behavior changes and a deterministic before/after check otherwise. Reserve full suites for milestones. Separate subjective criteria by named judge.
+4. Cover relevant trust and authorization boundaries, secrets, privacy, abuse and rate limits, data and migrations, deployment, observability and launch gates. Include the checkpoint and circuit-breaker strategy.
+5. Self-review once, score 1-10 and allow at most two repair passes. Keep self-review inline. Only a plan with Full-tier slices requires one fresh-context independent review. At that gate read `references/full-plan-review.md`.
+6. Finish with the self-score, repairs, independent review status, accepted/rejected/deferred findings, blockers and readiness decision. Disclose any unavailable or skipped independent review and its residual risk.

@@ -1,34 +1,28 @@
 # Isolation, Implementation, And QA
 
-Load before implementing approved candidates.
+Load this only after the user approves candidates, before any code change.
 
 ## Isolation
 
-- Start only after explicit approval of candidates/scope.
-- Work on an owned dedicated branch/worktree; never main/master.
-- Prefer heavier isolation for dependency/build/release changes when risk justifies it.
-- Preserve unrelated dirty work and define an expected file allowlist before editing.
-- Merge only after the full approved set is complete, QA-clean, and explicitly approved.
+- Work on an owned, dedicated branch or worktree; never on main/master.
+- Use heavier isolation (a separate clone) for dependency, build-system, or release changes when the risk justifies it.
+- Preserve unrelated dirty work, and define the expected file allowlist before editing.
 
 ## Implementation
 
-- Execute one narrow slice with `auto-pilot` discipline at a time.
-- Add characterization tests before risky or weakly covered refactors. Keep them green before and after.
-- Do not manufacture RED for behavior-preserving structural work. If a behavior change is separately approved, require a RED -> GREEN acceptance check.
-- Prefer existing project patterns and local helpers over new abstractions.
-- Eject any unapproved behavior change into a separate proposal.
-- Audit final changed files against the allowlist and commit only coherent verified checkpoints.
+1. Plan the selected set with `auto-plan`. Classify each slice with the verification kernel in `references/verification-kernel.md`.
+2. Add characterization tests before you move risky or weakly covered behavior, and prove that they pass before the change. They must pass before and after: do not manufacture RED for behavior-preserving structural work.
+3. Execute one narrow slice at a time with `auto-pilot` discipline. Prefer existing project patterns and local helpers over new abstractions.
+4. If a slice needs a behavior change, stop that slice and eject it into a separately approved Auto plan with RED -> GREEN proof.
+5. Audit the changed files against the allowlist and commit only coherent, verified checkpoints.
 
 ## QA And Evidence
 
-- Run `auto-qa` per slice and a broader final pass.
-- Run deterministic gates cheapest first.
-- Run the Frontend Gate for every UI-visible surface and compare with baseline screenshots.
-- Record every claimed gate as an execution receipt: exact command/flow, timestamp, exit/result, concise evidence, and material environment/profile.
-- Compare final metrics/failures to baseline and record the regression delta.
-- Stop blind retries after the same failure twice. Diagnose or shrink the slice; cap implementation/fix attempts at five.
-- A required skipped/blocked gate is never a pass.
+- Run `auto-qa` per slice at the slice's tier, and one broader pass across the final set.
+- Run the Frontend Gate for every UI-visible surface and compare with the baseline screenshots.
+- Compare the final metrics and failures with the baseline and record the regression delta. A metric that moved the wrong way is reported, not hidden.
+- A required gate that was skipped or blocked is never a pass.
 
 ## Merge Gate
 
-Require the full selected set, complete receipts, clean relevant QA, honest regression delta, explicit user approval, and a green post-merge check before logging completion.
+Merge requires the full selected set, complete receipts, clean relevant QA, an honest regression delta, and explicit user approval. Run a post-merge check and confirm that it is green before you log completion.

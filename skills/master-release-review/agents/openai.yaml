@@ -1,4 +1,4 @@
 interface:
   display_name: "Master Release Review"
   short_description: "Trust, privacy, deps, config, and build review before release"
-  default_prompt: "Use $master-release-review to check this project's trust, privacy, dependency, configuration, and production-build readiness before release and write a GO / NO-GO report outside the repo."
+  default_prompt: "Use $master-release-review to check this project's trust, privacy, dependency, configuration, and production-build readiness before release and record the decision allowed by the evidence in an external report."

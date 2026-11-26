@@ -1,4 +1,4 @@
 interface:
   display_name: "Master QA"
   short_description: "Run a receipt-backed release quality gate"
-  default_prompt: "Use $master-qa to run the final release gate with baseline comparison, execution receipts, and a GO or NO-GO decision."
+  default_prompt: "Use $master-qa to run the final release gate with baseline comparison, execution receipts, and the decision allowed by the evidence."
